@@ -1,0 +1,40 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"target": "ESNext",
+		"lib": ["ESNext", "WebWorker"],
+		"types": ["@cloudflare/workers-types"],
+
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"noEmit": false,
+		"noImplicitReturns": true,
+		"noUnusedParameters": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": false,
+		"strict": true,
+
+		"paths": {
+			"~/*": [
+				"./src/*"
+			]
+		}
+	},
+
+	"include": [
+		"**/*.ts",
+		"**/*.d.ts"
+	],
+
+	"exclude": [
+		"dist",
+		"node_modules"
+	]
+}
