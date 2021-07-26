@@ -10,12 +10,12 @@ const getURL = (url: string) => {
 	return u.protocol + '//' + u.host;
 };
 
-const DEFAULT_SECURITY_HEADERS: Record<string, string> = {
-	'Cache-Control': 'no-store',
-	'Content-Security-Policy': "frame-ancestors 'none'",
-	'X-Content-Type-Options': 'nosniff',
-	'X-Frame-Options': 'DENY',
-};
+// const DEFAULT_SECURITY_HEADERS: Record<string, string> = {
+// 	'Cache-Control': 'no-store',
+// 	'Content-Security-Policy': "frame-ancestors 'none'",
+// 	'X-Content-Type-Options': 'nosniff',
+// 	'X-Frame-Options': 'DENY',
+// };
 
 router.get('/', () => new Response('Hello, world!'));
 

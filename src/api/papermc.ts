@@ -126,9 +126,6 @@ const papermc = {
 		);
 
 		const r = new Response(jarRes.body, { ...jarRes, headers: {} });
-		for (const h in r.headers.keys) {
-			r.headers.delete(h);
-		}
 		r.headers.set(
 			'Content-Disposition',
 			`attachment; filename=${JSON.stringify(project.slug + '-' + version + '-' + build + '.jar')}`,
