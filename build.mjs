@@ -1,19 +1,22 @@
 import { build } from 'esbuild';
 
-const isProduction = process.env.NODE_ENV === 'production';
 const define = {};
-
+const allowedEnvironmentVariables = ['USER_AGENT'];
 for (const k in process.env) {
-	if (k === 'NODE_ENV') {
+	if (!allowedEnvironmentVariables.includes(k)) {
 		continue;
 	}
 	define[k] = JSON.stringify(process.env[k]);
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+const format = process.env.ESBUILD_FORMAT || 'cjs';
+const outfile = format === 'esm' ? 'dist/index.mjs' : 'dist/index.js';
+
 build({
 	sourcemap: !isProduction && true,
 	legalComments: 'none',
-	format: 'esm',
+	format: format,
 	target: 'esnext',
 	minify: isProduction,
 	charset: 'utf8',
@@ -21,6 +24,6 @@ build({
 	logLevel: isProduction ? 'info' : 'silent',
 
 	bundle: true,
-	outfile: 'dist/index.mjs',
+	outfile,
 	entryPoints: ['src/index.ts'],
 }).catch(() => process.exit(1));

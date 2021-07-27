@@ -172,7 +172,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^4.28.5
     "@typescript-eslint/parser": ^4.28.5
     cross-env: ^7.0.3
-    esbuild: ^0.12.15
+    esbuild: ^0.12.16
     eslint: ^7.31.0
     eslint-config-prettier: ^8.3.0
     eslint-config-standard: ^16.0.3
@@ -183,7 +183,7 @@ __metadata:
     husky: ^7.0.1
     itty-router: ^2.3.10
     itty-router-extras: ^0.4.2
-    miniflare: ^1.3.2
+    miniflare: ^1.3.3
     prettier: ^2.3.2
     typescript: ^4.3.5
     ~: "link:./src"
@@ -1040,12 +1040,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.12.15":
-  version: 0.12.15
-  resolution: "esbuild@npm:0.12.15"
+"esbuild@npm:^0.12.16":
+  version: 0.12.16
+  resolution: "esbuild@npm:0.12.16"
   bin:
     esbuild: bin/esbuild
-  checksum: 22ec14d41c8a9256934b476575f3dbb47437c3c9953c4e4e00560454449075822c0824fa982a51cb545c255c561a781908da9711081d57b4f3bca15341569906
+  checksum: 3fc788d3b9532b2168060e146fe3ef183504cfc98382e7de2526790789fd948e193719d1c6345fefeda887b8449187e75a56d81368f7a2b3f3c26aae0e83dfb7
   languageName: node
   linkType: hard
 
@@ -2149,9 +2149,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"miniflare@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "miniflare@npm:1.3.2"
+"miniflare@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "miniflare@npm:1.3.3"
   dependencies:
     "@cloudflare/workers-types": ^2.2.2
     "@iarna/toml": ^2.2.5
@@ -2182,7 +2182,7 @@ fsevents@~2.3.2:
     youch: ^2.2.2
   bin:
     miniflare: dist/bootstrap.js
-  checksum: 002a938f9d2b2f571746665b3837bbd34b26b6937697147867d4a215506b8720476f9bc08475fa6b7b148ff06daf8f5f02ce8cd92ff199d0d3a3752decea74d8
+  checksum: 62392b8230277660b900dcde1ae1fbbdb997d52a1b5a5074b50590e0efdcd3cc562648a26d32cb9f6328fa79000cdbe62c2d52ec9a89f57ef98c6ced38b6c2a7
   languageName: node
   linkType: hard
 
