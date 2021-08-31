@@ -41,7 +41,13 @@ interface PaperBuild {
 	build: string;
 	result: string;
 	duration: number;
-	commits: { author: string; description: string; hash: string; email: string; timestamp: number }[];
+	commits: {
+		author: string;
+		description: string;
+		hash: string;
+		email: string;
+		timestamp: number;
+	}[];
 	timestamp: Date;
 	md5: string;
 }
@@ -60,13 +66,17 @@ const rawDataToBuild = (data: any): PaperBuild => {
 };
 
 const purpur = {
-	toAPI: async (project: Project): Promise<Project> => {
+	toAPI: async (project: Project): Promise<Project | Response> => {
 		const res = await cachedFetch(`${baseUrl}/${project.slug}`, {
 			headers: {
 				Accept: 'application/json',
 				'User-Agent': USER_AGENT,
 			},
 		});
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { versions } = rawDataToProject(await res.json());
 		return {
@@ -75,29 +85,53 @@ const purpur = {
 		};
 	},
 
-	getVersion: async (project: Project, version: string): Promise<Version> => {
+	getVersion: async (project: Project, version: string): Promise<Version | Response> => {
 		const res = await cachedFetch(`${baseUrl}/${project.slug}/${version}`, {
 			headers: {
 				Accept: 'application/json',
 				'User-Agent': USER_AGENT,
 			},
 		});
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { version: name, builds } = rawDataToVersion(await res.json());
 
 		return {
 			name,
-			builds: builds.all,
+			builds: builds.all.sort((a, b) => (a < b ? -1 : 1)),
 		};
 	},
 
-	getBuild: async (project: Project, url: string, version: string, build: string): Promise<Build> => {
+	getBuild: async (
+		project: Project,
+		url: string,
+		version: string,
+		build: string,
+	): Promise<Build | Response> => {
+		if (build === 'latest') {
+			const latestBuild = await purpur.getVersion(project, version);
+			if (latestBuild instanceof Response) {
+				return latestBuild;
+			}
+			build = latestBuild.builds.pop() || '';
+			if (build === '') {
+				return new Response('what the fuck?');
+			}
+		}
+
 		const res = await cachedFetch(`${baseUrl}/${project.slug}/${version}/${build}`, {
 			headers: {
 				Accept: 'application/json',
 				'User-Agent': USER_AGENT,
 			},
 		});
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { timestamp, md5 } = rawDataToBuild(await res.json());
 
@@ -116,17 +150,26 @@ const purpur = {
 	},
 
 	getDownload: async (project: Project, version: string, build: string): Promise<Response> => {
-		const jarRes = await cachedFetch(`${baseUrl}/${project.slug}/${version}/${build}/download`, {
-			headers: {
-				Accept: '*/*',
-				'User-Agent': USER_AGENT,
+		const jarRes = await cachedFetch(
+			`${baseUrl}/${project.slug}/${version}/${build}/download`,
+			{
+				headers: {
+					Accept: '*/*',
+					'User-Agent': USER_AGENT,
+				},
 			},
-		});
+		);
+		if (jarRes.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return jarRes;
+		}
 
 		const r = new Response(jarRes.body, { ...jarRes, headers: {} });
 		r.headers.set(
 			'Content-Disposition',
-			`attachment; filename=${JSON.stringify(project.slug + '-' + version + '-' + build + '.jar')}`,
+			`attachment; filename=${JSON.stringify(
+				project.slug + '-' + version + '-' + build + '.jar',
+			)}`,
 		);
 		r.headers.set('Content-Type', 'application/java-archive');
 		return r;

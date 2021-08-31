@@ -9,7 +9,8 @@ const paper: Project = {
 	getVersion: async (version: string): Promise<Version> => papermc.getVersion(paper, version),
 	getBuild: async (url: string, version: string, build: string): Promise<Build> =>
 		papermc.getBuild(paper, url, version, build),
-	getDownload: (version: string, build: string): Promise<Response> => papermc.getDownload(paper, version, build),
+	getDownload: (version: string, build: string): Promise<Response> =>
+		papermc.getDownload(paper, version, build),
 };
 
 export default paper;

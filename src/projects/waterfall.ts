@@ -9,7 +9,8 @@ const waterfall: Project = {
 	getVersion: async (version: string): Promise<Version> => papermc.getVersion(waterfall, version),
 	getBuild: async (url: string, version: string, build: string): Promise<Build> =>
 		papermc.getBuild(waterfall, url, version, build),
-	getDownload: (version: string, build: string): Promise<Response> => papermc.getDownload(waterfall, version, build),
+	getDownload: (version: string, build: string): Promise<Response> =>
+		papermc.getDownload(waterfall, version, build),
 };
 
 export default waterfall;

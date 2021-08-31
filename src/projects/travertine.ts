@@ -6,10 +6,12 @@ const travertine: Project = {
 	name: 'Travertine',
 
 	toAPI: async (): Promise<Project> => papermc.toAPI(travertine),
-	getVersion: async (version: string): Promise<Version> => papermc.getVersion(travertine, version),
+	getVersion: async (version: string): Promise<Version> =>
+		papermc.getVersion(travertine, version),
 	getBuild: async (url: string, version: string, build: string): Promise<Build> =>
 		papermc.getBuild(travertine, url, version, build),
-	getDownload: (version: string, build: string): Promise<Response> => papermc.getDownload(travertine, version, build),
+	getDownload: (version: string, build: string): Promise<Response> =>
+		papermc.getDownload(travertine, version, build),
 };
 
 export default travertine;

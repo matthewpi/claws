@@ -10,8 +10,8 @@ export interface Project {
 	versions?: string[];
 
 	toAPI: () => Promise<Project>;
-	getVersion: (version: string) => Promise<Version>;
-	getBuild: (url: string, version: string, build: string) => Promise<Build>;
+	getVersion: (version: string) => Promise<Version | Response>;
+	getBuild: (url: string, version: string, build: string) => Promise<Build | Response>;
 	getDownload: (version: string, build: string) => Promise<Response>;
 }
 

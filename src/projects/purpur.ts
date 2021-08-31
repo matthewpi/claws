@@ -9,7 +9,8 @@ const purpur: Project = {
 	getVersion: async (version: string): Promise<Version> => purpurApi.getVersion(purpur, version),
 	getBuild: async (url: string, version: string, build: string): Promise<Build> =>
 		purpurApi.getBuild(purpur, url, version, build),
-	getDownload: (version: string, build: string): Promise<Response> => purpurApi.getDownload(purpur, version, build),
+	getDownload: (version: string, build: string): Promise<Response> =>
+		purpurApi.getDownload(purpur, version, build),
 };
 
 export default purpur;

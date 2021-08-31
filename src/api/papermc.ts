@@ -58,13 +58,17 @@ const rawDataToBuild = (data: any): PaperBuild => {
 };
 
 const papermc = {
-	toAPI: async (project: Project): Promise<Project> => {
+	toAPI: async (project: Project): Promise<Project | Response> => {
 		const res = await cachedFetch(`${baseUrl}/projects/${project.slug}`, {
 			headers: {
 				Accept: 'application/json',
 				'User-Agent': USER_AGENT,
 			},
 		});
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { versions } = rawDataToProject(await res.json());
 		return {
@@ -73,29 +77,56 @@ const papermc = {
 		};
 	},
 
-	getVersion: async (project: Project, version: string): Promise<Version> => {
+	getVersion: async (project: Project, version: string): Promise<Version | Response> => {
 		const res = await cachedFetch(`${baseUrl}/projects/${project.slug}/versions/${version}`, {
 			headers: {
 				Accept: 'application/json',
 				'User-Agent': USER_AGENT,
 			},
 		});
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { version: name, builds } = rawDataToVersion(await res.json());
 
 		return {
 			name,
-			builds: builds.map((v) => v.toString()),
+			builds: builds.sort((a, b) => a - b).map((v) => v.toString()),
 		};
 	},
 
-	getBuild: async (project: Project, url: string, version: string, build: string): Promise<Build> => {
-		const res = await cachedFetch(`${baseUrl}/projects/${project.slug}/versions/${version}/builds/${build}`, {
-			headers: {
-				Accept: 'application/json',
-				'User-Agent': USER_AGENT,
+	getBuild: async (
+		project: Project,
+		url: string,
+		version: string,
+		build: string,
+	): Promise<Build | Response> => {
+		if (build === 'latest') {
+			const latestBuild = await papermc.getVersion(project, version);
+			if (latestBuild instanceof Response) {
+				return latestBuild;
+			}
+			build = latestBuild.builds.pop() || '';
+			if (build === '') {
+				return new Response('what the fuck?');
+			}
+		}
+
+		const res = await cachedFetch(
+			`${baseUrl}/projects/${project.slug}/versions/${version}/builds/${build}`,
+			{
+				headers: {
+					Accept: 'application/json',
+					'User-Agent': USER_AGENT,
+				},
 			},
-		});
+		);
+		if (res.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return res;
+		}
 
 		const { downloads, time } = rawDataToBuild(await res.json());
 		const d = downloads.application;
@@ -124,11 +155,17 @@ const papermc = {
 				},
 			},
 		);
+		if (jarRes.status !== 200) {
+			// TODO: Convert response to a standard error format.
+			return jarRes;
+		}
 
 		const r = new Response(jarRes.body, { ...jarRes, headers: {} });
 		r.headers.set(
 			'Content-Disposition',
-			`attachment; filename=${JSON.stringify(project.slug + '-' + version + '-' + build + '.jar')}`,
+			`attachment; filename=${JSON.stringify(
+				project.slug + '-' + version + '-' + build + '.jar',
+			)}`,
 		);
 		r.headers.set('Content-Type', 'application/java-archive');
 		return r;

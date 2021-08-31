@@ -35,13 +35,17 @@ router.get('/api/v1/categories/:category', withParams, ({ category }: { category
 	return json(categories[category]);
 });
 
-router.get('/api/v1/categories/:category/projects', withParams, ({ category }: { category: string }) => {
-	if (!(category in categories)) {
-		return missing('category not found');
-	}
+router.get(
+	'/api/v1/categories/:category/projects',
+	withParams,
+	({ category }: { category: string }) => {
+		if (!(category in categories)) {
+			return missing('category not found');
+		}
 
-	return json(categories[category].projects);
-});
+		return json(categories[category].projects);
+	},
+);
 
 router.get('/api/v1/projects', () => {
 	const data = [];
@@ -59,13 +63,17 @@ router.get('/api/v1/projects/:project', withParams, async ({ project }: { projec
 	return json(await projects[project]?.toAPI());
 });
 
-router.get('/api/v1/projects/:project/versions', withParams, async ({ project }: { project: string }) => {
-	if (!(project in projects)) {
-		return missing('project not found');
-	}
+router.get(
+	'/api/v1/projects/:project/versions',
+	withParams,
+	async ({ project }: { project: string }) => {
+		if (!(project in projects)) {
+			return missing('project not found');
+		}
 
-	return json((await projects[project]?.toAPI()).versions);
-});
+		return json((await projects[project]?.toAPI()).versions);
+	},
+);
 
 router.get(
 	'/api/v1/projects/:project/versions/:version',
@@ -93,12 +101,20 @@ router.get(
 
 router.get(
 	'/api/v1/projects/:project/versions/:version/builds/:build',
-	async ({ params, url }: { params: { project: string; version: string; build: string }; url: string }) => {
+	async ({
+		params,
+		url,
+	}: {
+		params: { project: string; version: string; build: string };
+		url: string;
+	}) => {
 		if (!(params.project in projects)) {
 			return missing('project not found');
 		}
 
-		return json(await projects[params.project]?.getBuild(getURL(url), params.version, params.build));
+		return json(
+			await projects[params.project]?.getBuild(getURL(url), params.version, params.build),
+		);
 	},
 );
 
