@@ -1,4 +1,6 @@
-import { build } from 'esbuild';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { build } = require('esbuild');
+const { pnpPlugin } = require('@yarnpkg/esbuild-plugin-pnp');
 
 const define = {};
 const allowedEnvironmentVariables = ['USER_AGENT'];
@@ -26,4 +28,5 @@ build({
 	bundle: true,
 	outfile,
 	entryPoints: ['src/index.ts'],
+	plugins: [pnpPlugin()],
 }).catch(() => process.exit(1));
