@@ -15,7 +15,7 @@
 		"format": "prettier --write --ignore-unknown ./build.cjs ./{src,types}/**/*.ts"
 	},
 	"dependencies": {
-		"itty-router": "2.3.10",
+		"itty-router": "2.4.2",
 		"itty-router-extras": "0.4.2",
 		"~": "link:./src"
 	},

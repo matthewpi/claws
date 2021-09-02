@@ -73,7 +73,7 @@ const papermc = {
 		const { versions } = rawDataToProject(await res.json());
 		return {
 			...project,
-			versions,
+			versions: versions.sort((a, b) => (a < b ? -1 : 1)),
 		};
 	},
 
@@ -146,12 +146,16 @@ const papermc = {
 	},
 
 	getDownload: async (project: Project, version: string, build: string): Promise<Response> => {
-		const jarRes = await cachedFetch(
+		const jarRes = await fetch(
 			`${baseUrl}/projects/${project.slug}/versions/${version}/builds/${build}/downloads/${project.slug}-${version}-${build}.jar`,
 			{
 				headers: {
 					Accept: '*/*',
 					'User-Agent': USER_AGENT,
+				},
+				cf: {
+					cacheEverything: true,
+					cacheTtl: 24 * 60 * 60,
 				},
 			},
 		);

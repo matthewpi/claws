@@ -1,4 +1,4 @@
-import { json, missing, ThrowableRouter, withParams } from 'itty-router-extras';
+import { json as ittyJson, missing, ThrowableRouter, withParams } from 'itty-router-extras';
 
 import categories from '~/categories';
 import projects from '~/projects';
@@ -10,12 +10,27 @@ const getURL = (url: string) => {
 	return u.protocol + '//' + u.host;
 };
 
-// const DEFAULT_SECURITY_HEADERS: Record<string, string> = {
-// 	'Cache-Control': 'no-store',
-// 	'Content-Security-Policy': "frame-ancestors 'none'",
-// 	'X-Content-Type-Options': 'nosniff',
-// 	'X-Frame-Options': 'DENY',
-// };
+const json = (v: any): Response => {
+	const r: Response = ittyJson(v);
+	r.headers.set('Access-Control-Allow-Origin', '*');
+	r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	r.headers.set('Cache-Control', 'no-store');
+	r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+	r.headers.set('X-Frame-Options', 'DENY');
+	return r;
+};
+
+router.options('*', (req: Request) => {
+	const origin = req.headers.get('Origin');
+	const r = new Response(null, {
+		headers: {
+			'Access-Control-Allow-Origin': origin || '*',
+			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+		},
+	});
+	r.headers.append('Vary', 'Origin');
+	return r;
+});
 
 router.get('/', () => new Response('Hello, world!'));
 
@@ -71,7 +86,11 @@ router.get(
 			return missing('project not found');
 		}
 
-		return json((await projects[project]?.toAPI()).versions);
+		const res = await projects[project]?.toAPI();
+		if (res instanceof Response) {
+			return res;
+		}
+		return json(res.versions);
 	},
 );
 
@@ -95,7 +114,11 @@ router.get(
 			return missing('project not found');
 		}
 
-		return json((await projects[project]?.getVersion(version)).builds);
+		const res = await projects[project]?.getVersion(version);
+		if (res instanceof Response) {
+			return res;
+		}
+		return json(res.builds);
 	},
 );
 
@@ -132,12 +155,6 @@ router.get(
 
 router.all('*', () => missing('Not Found'));
 
-addEventListener('fetch', async (event: FetchEvent) => {
-	// const r: Response = await router.handle(event.request);
-	// const options = r;
-	// Object.keys(DEFAULT_SECURITY_HEADERS).forEach((k) => {
-	// 	options.headers.set(k, DEFAULT_SECURITY_HEADERS[k]);
-	// });
-	// event.respondWith(new Response(r.body, options));
+addEventListener('fetch', (event: FetchEvent) => {
 	event.respondWith(router.handle(event.request));
 });

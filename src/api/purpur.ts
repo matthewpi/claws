@@ -81,7 +81,7 @@ const purpur = {
 		const { versions } = rawDataToProject(await res.json());
 		return {
 			...project,
-			versions,
+			versions: versions.sort((a, b) => (a < b ? -1 : 1)),
 		};
 	},
 
@@ -150,15 +150,16 @@ const purpur = {
 	},
 
 	getDownload: async (project: Project, version: string, build: string): Promise<Response> => {
-		const jarRes = await cachedFetch(
-			`${baseUrl}/${project.slug}/${version}/${build}/download`,
-			{
-				headers: {
-					Accept: '*/*',
-					'User-Agent': USER_AGENT,
-				},
+		const jarRes = await fetch(`${baseUrl}/${project.slug}/${version}/${build}/download`, {
+			headers: {
+				Accept: '*/*',
+				'User-Agent': USER_AGENT,
 			},
-		);
+			cf: {
+				cacheEverything: true,
+				cacheTtl: 24 * 60 * 60,
+			},
+		});
 		if (jarRes.status !== 200) {
 			// TODO: Convert response to a standard error format.
 			return jarRes;

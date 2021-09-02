@@ -9,7 +9,7 @@ export interface Project {
 	name: string;
 	versions?: string[];
 
-	toAPI: () => Promise<Project>;
+	toAPI: () => Promise<Project | Response>;
 	getVersion: (version: string) => Promise<Version | Response>;
 	getBuild: (url: string, version: string, build: string) => Promise<Build | Response>;
 	getDownload: (version: string, build: string) => Promise<Response>;

@@ -3,7 +3,7 @@ const cachedFetch = (input: RequestInfo, init?: RequestInit): Promise<Response> 
 		...init,
 		cf: {
 			cacheEverything: true,
-			cacheTtl: 60,
+			cacheTtl: 5 * 60,
 		},
 	});
 };

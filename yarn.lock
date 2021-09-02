@@ -182,7 +182,7 @@ __metadata:
     eslint-plugin-promise: 5.1.0
     eslint-plugin-simple-import-sort: 7.0.0
     husky: 7.0.2
-    itty-router: 2.3.10
+    itty-router: 2.4.2
     itty-router-extras: 0.4.2
     miniflare: 1.4.0
     prettier: 2.3.2
@@ -1982,10 +1982,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"itty-router@npm:2.3.10":
-  version: 2.3.10
-  resolution: "itty-router@npm:2.3.10"
-  checksum: fb633fedbac1121a8de0efaba47658047bbec6735a6e047c395644170d24b3a2ea38016b0eac91b99825cd7a1abae5acd1f0052e39178d7f2be46e0c261b9caa
+"itty-router@npm:2.4.2":
+  version: 2.4.2
+  resolution: "itty-router@npm:2.4.2"
+  checksum: 481f0f48d0a9b79bcc03b6d0ecded66522a2f501acf0fd6b999585413bc7d2710d714ffb2e22ebc1891bae54df417b5e9e9b92ae4b2fa11c64b54dbf345f8b5c
   languageName: node
   linkType: hard
 
