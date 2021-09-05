@@ -1,12 +1,12 @@
-export interface Category {
-	slug: string;
-	name: string;
-	projects: string[];
-}
-
 export interface Build {
 	id: string;
 	download: Download;
+}
+
+export interface Category {
+	slug: string;
+	name: string;
+	projects: Project[];
 }
 
 export interface Download {
