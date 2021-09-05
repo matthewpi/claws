@@ -7,7 +7,9 @@ account_id = "<ACCOUNT_ID>"
 command = "yarn install && yarn run build:production"
 
 [build.upload]
-format = "service-worker"
+dir = "dist"
+format = "modules"
+main = "index.mjs"
 
 [env.production]
 route = "<DOMAIN>/*"
