@@ -46,7 +46,6 @@ router.get('/api/v1/categories/:category', withParams, ({ category }: { category
 	if (!(category in categories)) {
 		return missing('category not found');
 	}
-
 	return json(categories[category]);
 });
 
@@ -57,7 +56,6 @@ router.get(
 		if (!(category in categories)) {
 			return missing('category not found');
 		}
-
 		return json(categories[category].projects);
 	},
 );
@@ -74,8 +72,12 @@ router.get('/api/v1/projects/:project', withParams, async ({ project }: { projec
 	if (!(project in projects)) {
 		return missing('project not found');
 	}
-
-	return json(await projects[project]?.toAPI());
+	const p = projects[project];
+	const provider = p.provider;
+	if (provider === undefined) {
+		throw new Error();
+	}
+	return json(await provider.getProject());
 });
 
 router.get(
@@ -85,10 +87,14 @@ router.get(
 		if (!(project in projects)) {
 			return missing('project not found');
 		}
-
-		const res = await projects[project]?.toAPI();
-		if (res instanceof Response) {
-			return res;
+		const p = projects[project];
+		const provider = p.provider;
+		if (provider === undefined) {
+			throw new Error();
+		}
+		const res = await provider.getProject();
+		if (res === null) {
+			return json(null);
 		}
 		return json(res.versions);
 	},
@@ -101,8 +107,12 @@ router.get(
 		if (!(project in projects)) {
 			return missing('project not found');
 		}
-
-		return json(await projects[project]?.getVersion(version));
+		const p = projects[project];
+		const provider = p.provider;
+		if (provider === undefined) {
+			throw new Error();
+		}
+		return json(await provider.getVersion(version));
 	},
 );
 
@@ -113,10 +123,14 @@ router.get(
 		if (!(project in projects)) {
 			return missing('project not found');
 		}
-
-		const res = await projects[project]?.getVersion(version);
-		if (res instanceof Response) {
-			return res;
+		const p = projects[project];
+		const provider = p.provider;
+		if (provider === undefined) {
+			throw new Error();
+		}
+		const res = await provider.getVersion(version);
+		if (res === null) {
+			return json(null);
 		}
 		return json(res.builds);
 	},
@@ -124,20 +138,28 @@ router.get(
 
 router.get(
 	'/api/v1/projects/:project/versions/:version/builds/:build',
+	withParams,
 	async ({
-		params,
+		params: { project, version, build },
 		url,
 	}: {
 		params: { project: string; version: string; build: string };
 		url: string;
 	}) => {
-		if (!(params.project in projects)) {
+		if (!(project in projects)) {
 			return missing('project not found');
 		}
-
-		return json(
-			await projects[params.project]?.getBuild(getURL(url), params.version, params.build),
-		);
+		const p = projects[project];
+		const provider = p.provider;
+		if (provider === undefined) {
+			throw new Error();
+		}
+		const res = await provider.getBuild(version, build);
+		if (res === null) {
+			return json(null);
+		}
+		res.download.url = getURL(url) + res.download.url;
+		return json(res);
 	},
 );
 
@@ -148,13 +170,23 @@ router.get(
 		if (!(project in projects)) {
 			return missing('project not found');
 		}
-
-		return await projects[project]?.getDownload(version, build);
+		const p = projects[project];
+		const provider = p.provider;
+		if (provider === undefined) {
+			throw new Error();
+		}
+		const res = await provider.getDownload(version, build);
+		if (res === null) {
+			return json(null);
+		}
+		return res;
 	},
 );
 
 router.all('*', () => missing('Not Found'));
 
-addEventListener('fetch', (event: FetchEvent) => {
-	event.respondWith(router.handle(event.request));
-});
+export default {
+	async fetch(request: FetchEvent): Promise<Response> {
+		return router.handle(request);
+	},
+};
