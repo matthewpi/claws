@@ -45,6 +45,7 @@ export class Provider implements ProjectProvider {
 			}
 		}
 
+		// TODO: Catch failed build and keep trying lower builds until a maximum of 5 failed builds are reached.
 		const b = await this.purpur.getBuild(this.project.slug, version, build);
 		if (b === null) {
 			return null;

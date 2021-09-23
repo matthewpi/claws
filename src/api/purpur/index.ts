@@ -60,12 +60,18 @@ class Purpur {
 	 * @returns ?
 	 */
 	async getBuild(project: string, version: string, build: string): Promise<Build | null> {
-		// TODO: Support latest build.
 		const res = await this.cachedFetch(`/${project}/${version}/${build}`);
 		if (res === null) {
 			return null;
 		}
-		return rawDataToBuild(await res.json());
+
+		const b = rawDataToBuild(await res.json());
+
+		if (b.result !== 'SUCCESS') {
+			throw new StatusError(400, "build is bad, m'kay");
+		}
+
+		return b;
 	}
 
 	/**
