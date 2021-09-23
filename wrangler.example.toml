@@ -3,6 +3,8 @@ type = "javascript"
 
 account_id = "<ACCOUNT_ID>"
 
+compatibility_date = "2021-09-23"
+
 [build]
 command = "yarn install && yarn run build:production"
 
