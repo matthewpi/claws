@@ -1,24 +1,41 @@
-import { json as ittyJson, missing, ThrowableRouter, withParams } from 'itty-router-extras';
+import { Router } from 'itty-router';
+import {
+	error as ittyError,
+	json as ittyJson,
+	missing,
+	StatusError,
+	withParams,
+} from 'itty-router-extras';
 
 import categories from '~/categories';
 import projects from '~/projects';
 
-const router = ThrowableRouter();
+const router = Router();
 
-const getURL = (url: string) => {
+function getURL(url: string) {
 	const u = new URL(url);
 	return u.protocol + '//' + u.host;
-};
+}
 
-const json = (v: any): Response => {
-	const r: Response = ittyJson(v);
+function json(v: any): Response {
+	const r = ittyJson(v);
 	r.headers.set('Access-Control-Allow-Origin', '*');
 	r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
 	r.headers.set('Cache-Control', 'no-store');
 	r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
 	r.headers.set('X-Frame-Options', 'DENY');
 	return r;
-};
+}
+
+function formatError(status: number, payload?: any): Response {
+	const r = ittyError(status, payload);
+	r.headers.set('Access-Control-Allow-Origin', '*');
+	r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	r.headers.set('Cache-Control', 'no-store');
+	r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+	r.headers.set('X-Frame-Options', 'DENY');
+	return r;
+}
 
 router.options('*', (req: Request) => {
 	const origin = req.headers.get('Origin');
@@ -187,6 +204,14 @@ router.all('*', () => missing('Not Found'));
 
 export default {
 	async fetch(request: FetchEvent): Promise<Response> {
-		return router.handle(request);
+		return router.handle(request as unknown as Request).catch(async (error: any) => {
+			if (error instanceof StatusError) {
+				const e = error as StatusError;
+				// @ts-ignore
+				return formatError(e.status, e.message);
+			}
+			console.error(error);
+			return formatError(500, 'internal server error');
+		});
 	},
 };

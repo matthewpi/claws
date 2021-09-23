@@ -6,7 +6,7 @@
 		"moduleResolution": "Node",
 		"target": "ESNext",
 		"lib": ["ESNext", "WebWorker"],
-		"types": ["@cloudflare/workers-types"],
+		"types": ["@cloudflare/workers-types", "@types/itty-router-extras"],
 
 		"allowJs": true,
 		"allowSyntheticDefaultImports": true,
@@ -22,19 +22,11 @@
 		"strict": true,
 
 		"paths": {
-			"~/*": [
-				"./src/*"
-			]
+			"~/*": ["./src/*"]
 		}
 	},
 
-	"include": [
-		"**/*.ts",
-		"**/*.d.ts"
-	],
+	"include": ["**/*.ts", "**/*.d.ts"],
 
-	"exclude": [
-		"dist",
-		"node_modules"
-	]
+	"exclude": ["dist", "node_modules"]
 }

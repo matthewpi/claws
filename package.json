@@ -20,6 +20,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "2.2.2",
+		"@types/itty-router-extras": "^0.4.0",
 		"@typescript-eslint/eslint-plugin": "4.31.2",
 		"@typescript-eslint/parser": "4.31.2",
 		"@yarnpkg/esbuild-plugin-pnp": "1.0.1-rc.3",

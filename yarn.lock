@@ -169,6 +169,7 @@ __metadata:
   resolution: "@pterodactyl/claws@workspace:."
   dependencies:
     "@cloudflare/workers-types": 2.2.2
+    "@types/itty-router-extras": ^0.4.0
     "@typescript-eslint/eslint-plugin": 4.31.2
     "@typescript-eslint/parser": 4.31.2
     "@yarnpkg/esbuild-plugin-pnp": 1.0.1-rc.3
@@ -202,6 +203,15 @@ __metadata:
   version: 2.0.2
   resolution: "@types/asn1js@npm:2.0.2"
   checksum: 4079eca4c0916a0cea6bf490fec3bb5d64cd54e99efc0b32dfb1f6636712d47045042b9cd503afd2c0251e1095578dbb7f8d246a088fa1598fdb00ab4c05614f
+  languageName: node
+  linkType: hard
+
+"@types/itty-router-extras@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@types/itty-router-extras@npm:0.4.0"
+  dependencies:
+    itty-router: ^2.3.10
+  checksum: 615c0de94e8a06d4db33262d2bb9a348ffb76aaad4a6ebf103771fae42d0458879815c1c604a601b7e95e553f11a662b780125a8054e101cd7fe124278a4d1a3
   languageName: node
   linkType: hard
 
@@ -2126,7 +2136,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"itty-router@npm:2.4.2":
+"itty-router@npm:2.4.2, itty-router@npm:^2.3.10":
   version: 2.4.2
   resolution: "itty-router@npm:2.4.2"
   checksum: 481f0f48d0a9b79bcc03b6d0ecded66522a2f501acf0fd6b999585413bc7d2710d714ffb2e22ebc1891bae54df417b5e9e9b92ae4b2fa11c64b54dbf345f8b5c
