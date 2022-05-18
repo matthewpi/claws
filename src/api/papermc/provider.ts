@@ -2,8 +2,8 @@ import { PaperMC } from '~/api/papermc';
 import { Build, Project, ProjectProvider, Version } from '~/schema';
 
 export class Provider implements ProjectProvider {
-	private paperMC: PaperMC;
-	private project: Project;
+	private readonly paperMC: PaperMC;
+	private readonly project: Project;
 
 	public constructor(paperMC: PaperMC, project: Project) {
 		this.paperMC = paperMC;

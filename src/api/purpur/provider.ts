@@ -2,8 +2,8 @@ import { Purpur } from '~/api/purpur';
 import { Build, Project, ProjectProvider, Version } from '~/schema';
 
 export class Provider implements ProjectProvider {
-	private purpur: Purpur;
-	private project: Project;
+	private readonly purpur: Purpur;
+	private readonly project: Project;
 
 	public constructor(purpur: Purpur, project: Project) {
 		this.purpur = purpur;

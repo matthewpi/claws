@@ -7,7 +7,7 @@ import { rawDataToVersion, Version } from '~/api/purpur/version';
 import cachedFetch from '~/cachedFetch';
 
 class Purpur {
-	private baseURL: string;
+	private readonly baseURL: string;
 
 	/**
 	 * ?
@@ -120,7 +120,7 @@ class Purpur {
 			case 404:
 				return null;
 			default:
-				throw new StatusError(res.status);
+				throw new StatusError(res.status, '');
 		}
 		return res;
 	}
@@ -144,7 +144,7 @@ class Purpur {
 			case 404:
 				return null;
 			default:
-				throw new StatusError(res.status);
+				throw new StatusError(res.status, '');
 		}
 		return res;
 	}

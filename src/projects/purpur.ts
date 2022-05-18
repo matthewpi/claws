@@ -6,6 +6,6 @@ const purpur: Project = {
 	name: 'Purpur',
 };
 
-purpur.provider = new Provider(new Purpur('https://api.pl3x.net/v2'), purpur);
+purpur.provider = new Provider(new Purpur('https://api.purpurmc.org/v2'), purpur);
 
 export default purpur;

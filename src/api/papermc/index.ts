@@ -7,7 +7,7 @@ import { rawDataToVersion, Version } from '~/api/papermc/version';
 import cachedFetch from '~/cachedFetch';
 
 class PaperMC {
-	private baseURL: string;
+	private readonly baseURL: string;
 
 	/**
 	 * ?
@@ -126,7 +126,7 @@ class PaperMC {
 			case 404:
 				return null;
 			default:
-				throw new StatusError(res.status);
+				throw new StatusError(res.status, '');
 		}
 		return res;
 	}
@@ -150,7 +150,7 @@ class PaperMC {
 			case 404:
 				return null;
 			default:
-				throw new StatusError(res.status);
+				throw new StatusError(res.status, '');
 		}
 		return res;
 	}
