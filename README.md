@@ -1,3 +1,3 @@
 # Claws
 
-Soon&trade;
+Coming Soon&trade;

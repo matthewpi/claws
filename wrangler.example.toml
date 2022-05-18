@@ -1,18 +1,10 @@
 name = "claws"
-type = "javascript"
+compatibility_date = "2022-05-18"
+main = "dist/index.mjs"
 
+workers_dev = false
 account_id = "<ACCOUNT_ID>"
-
-compatibility_date = "2021-09-23"
+route = { pattern = "claws.<DOMAIN>/*", zone_name = "<DOMAIN>" }
 
 [build]
-command = "yarn install && yarn run build:production"
-
-[build.upload]
-dir = "dist"
-format = "modules"
-main = "index.mjs"
-
-[env.production]
-route = "<DOMAIN>/*"
-zone_id = "<ZONE_ID>"
+command = "yarn install --immutable && yarn run build"
