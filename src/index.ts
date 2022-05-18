@@ -103,7 +103,7 @@ router.get('/api/v1/projects/:project', withParams, async ({ project }: { projec
 	const p = projects[project];
 	const provider = p.provider;
 	if (provider === undefined) {
-		throw new Error();
+		throw new Error('fuck');
 	}
 	return json(await provider.getProject());
 });
@@ -215,7 +215,7 @@ router.all('*', () => missing('Not Found'));
 
 export default {
 	async fetch(request: FetchEvent): Promise<Response> {
-		return router.handle(request as unknown as Request).catch(async (error: unknown) => {
+		return router.handle(request as unknown as Request).catch(async (error: any) => {
 			if (error instanceof StatusError) {
 				const e = error as StatusError;
 

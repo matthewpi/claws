@@ -7,8 +7,8 @@
 	"private": true,
 	"scripts": {
 		"clean": "rm -f dist/*",
-		"build": "$npm_node_execpath build.mjs",
-		"dev": "cross-env NODE_ENV=development wrangler dev",
+		"build": "cross-env USER_AGENT=\"Claws\" $npm_node_execpath build.mjs",
+		"dev": "cross-env NODE_ENV=development USER_AGENT=\"undefined\" wrangler dev --local",
 		"publish": "wrangler publish"
 	},
 	"dependencies": {
