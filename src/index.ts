@@ -17,6 +17,17 @@ function getURL(url: string) {
 	return u.protocol + '//' + u.host;
 }
 
+function text(v: string): Response {
+	const r = new Response(v);
+	r.headers.set('Content-Type', 'text/plain; charset=utf-8');
+	r.headers.set('Access-Control-Allow-Origin', '*');
+	r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	r.headers.set('Cache-Control', 'no-store');
+	r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+	r.headers.set('X-Frame-Options', 'DENY');
+	return r;
+}
+
 function json(v: any): Response {
 	const r = ittyJson(v);
 	r.headers.set('Access-Control-Allow-Origin', '*');
@@ -49,7 +60,7 @@ router.options('*', (req: Request) => {
 	return r;
 });
 
-router.get('/', () => new Response('Hello, world!'));
+router.get('/', () => text('Hello, world!'));
 
 router.get('/api/v1/categories', () => {
 	const data = [];
