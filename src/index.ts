@@ -91,7 +91,7 @@ router.get(
 router.get('/api/v1/projects', () => {
 	const data = [];
 	for (const k in projects) {
-		data.push(projects[k]);
+		data.push({ name: projects[k].name, slug: projects[k].slug });
 	}
 	return json(data);
 });
