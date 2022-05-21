@@ -6,6 +6,6 @@ const paper: Project = {
 	name: 'Paper',
 };
 
-paper.provider = new Provider(new PaperMC('https://papermc.io/api/v2'), paper);
+paper.provider = new Provider(new PaperMC('https://api.papermc.io/v2'), paper);
 
 export default paper;
