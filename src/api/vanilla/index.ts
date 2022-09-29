@@ -126,7 +126,6 @@ class Vanilla {
 
 	/**
 	 * ?
-	 * @param base
 	 * @param input ?
 	 * @param init ?
 	 * @returns ?
