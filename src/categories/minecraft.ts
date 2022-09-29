@@ -1,4 +1,4 @@
-import { paper, purpur, travertine, waterfall } from '~/projects';
+import { paper, purpur, travertine, waterfall, vanilla } from '~/projects';
 import { Category } from '~/schema';
 
 const minecraft: Category = {
@@ -20,6 +20,10 @@ const minecraft: Category = {
 		{
 			slug: waterfall.slug,
 			name: waterfall.name,
+		},
+		{
+			slug: vanilla.slug,
+			name: vanilla.name,
 		},
 	],
 };
