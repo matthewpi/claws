@@ -71,8 +71,8 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			}
 
 			const data: Provider[] = [];
-			if (provider === 'mods') data.push(...categories[category].modProviders.map(p => ({ ...p, mods: true })));
-			else if (provider === 'projects') data.push(...categories[category].projectProviders.map(p => ({ ...p, mods: false })));
+			if (provider === 'mods') data.push(...categories[category].modProviders);
+			else if (provider === 'projects') data.push(...categories[category].projectProviders);
 
 			return this.json(data);
 		});
