@@ -9,7 +9,7 @@ const cachedFetch = (input: RequestInfo, init?: RequestInit): Promise<Response> 
 	options.headers = {
 		...options.headers,
 		Accept: 'application/json',
-		'User-Agent': USER_AGENT,
+		// TODO: Add USER_AGENT back here.
 	};
 	return fetch(input, options);
 };

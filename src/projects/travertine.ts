@@ -1,4 +1,4 @@
-import { PaperMC, Provider } from '~/api/papermc';
+import { PaperMC, Provider } from 'src/api/minecraft/papermc';
 import { Project } from '~/schema';
 
 const travertine: Project = {

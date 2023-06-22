@@ -1,4 +1,4 @@
-import { Vanilla, Provider } from '~/api/vanilla';
+import { Vanilla, Provider } from 'src/api/minecraft/vanilla';
 import { Project } from '~/schema';
 
 const vanilla: Project = {

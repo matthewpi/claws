@@ -1,17 +1,17 @@
-import { PaperMC } from '~/api/papermc';
+import { Purpur } from '~/api/minecraft/purpur/index';
 import { Build, Project, ProjectProvider, Version } from '~/schema';
 
 export class Provider implements ProjectProvider {
-	private readonly paperMC: PaperMC;
+	private readonly purpur: Purpur;
 	private readonly project: Project;
 
-	public constructor(paperMC: PaperMC, project: Project) {
-		this.paperMC = paperMC;
+	public constructor(purpur: Purpur, project: Project) {
+		this.purpur = purpur;
 		this.project = project;
 	}
 
 	async getProject(): Promise<Project | null> {
-		const p = await this.paperMC.getProject(this.project.slug);
+		const p = await this.purpur.getProject(this.project.slug);
 		if (p === null) {
 			return null;
 		}
@@ -23,13 +23,13 @@ export class Provider implements ProjectProvider {
 	}
 
 	async getVersion(version: string): Promise<Version | null> {
-		const v = await this.paperMC.getVersion(this.project.slug, version);
+		const v = await this.purpur.getVersion(this.project.slug, version);
 		if (v === null) {
 			return v;
 		}
 		return {
 			name: v.version,
-			builds: v.builds.map((v) => v.toString()),
+			builds: v.builds.all,
 		};
 	}
 
@@ -45,19 +45,19 @@ export class Provider implements ProjectProvider {
 			}
 		}
 
-		const b = await this.paperMC.getBuild(this.project.slug, version, build);
+		// TODO: Catch failed build and keep trying lower builds until a maximum of 5 failed builds are reached.
+		const b = await this.purpur.getBuild(this.project.slug, version, build);
 		if (b === null) {
 			return null;
 		}
-		const d = b.downloads.application;
 		return {
 			id: build,
 			download: {
-				name: d.name,
+				name: `${this.project.slug}-${version}-${build}.jar`,
 				url: `/api/v1/projects/${this.project.slug}/versions/${version}/builds/${build}/download`,
-				builtAt: b.time,
+				builtAt: b.timestamp,
 				checksums: {
-					sha256: d.sha256,
+					md5: b.md5,
 				},
 				metadata: {},
 			},
@@ -65,6 +65,6 @@ export class Provider implements ProjectProvider {
 	}
 
 	async getDownload(version: string, build: string): Promise<Response | null> {
-		return this.paperMC.getDownload(this.project.slug, version, build);
+		return this.purpur.getDownload(this.project.slug, version, build);
 	}
 }

@@ -1,4 +1,4 @@
-import { Purpur } from '~/api/purpur';
+import { Purpur } from '~/api/minecraft/purpur';
 import { Build, Project, ProjectProvider, Version } from '~/schema';
 
 export class Provider implements ProjectProvider {

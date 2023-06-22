@@ -1,9 +1,9 @@
 import { StatusError } from 'itty-router-extras';
 
-import { Build, rawDataToBuild } from '~/api/vanilla/build';
-import { Manifest, rawDataToManifest } from '~/api/vanilla/manifest';
-import { Provider } from '~/api/vanilla/provider';
-import { Version } from '~/api/vanilla/version';
+import { Build, rawDataToBuild } from '~/api/minecraft/vanilla/build';
+import { Manifest, rawDataToManifest } from '~/api/minecraft/vanilla/manifest';
+import { Provider } from '~/api/minecraft/vanilla/provider';
+import { Version } from '~/api/minecraft/vanilla/version';
 import cachedFetch from '~/cachedFetch';
 
 class Vanilla {
@@ -134,7 +134,6 @@ class Vanilla {
 		const options = init || {};
 		options.headers = {
 			...options.headers,
-			'User-Agent': USER_AGENT,
 		};
 		const res = await fetch(input, options);
 		switch (res.status) {

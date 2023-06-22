@@ -1,4 +1,4 @@
-import {rawDataToVersion, Version} from "~/api/vanilla/version";
+import {rawDataToVersion, Version} from "~/api/minecraft/vanilla/version";
 
 export interface Manifest {
 	projectId: string;

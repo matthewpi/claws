@@ -1,4 +1,4 @@
-import { Provider, Purpur } from '~/api/purpur';
+import { Provider, Purpur } from 'src/api/minecraft/purpur';
 import { Project } from '~/schema';
 
 const purpur: Project = {

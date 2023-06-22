@@ -1,4 +1,4 @@
-import { Vanilla } from '~/api/vanilla';
+import { Vanilla } from '~/api/minecraft/vanilla/index';
 import { Build, Project, ProjectProvider, Version } from '~/schema';
 
 export class Provider implements ProjectProvider {
