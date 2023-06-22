@@ -1,10 +1,5 @@
-import curseforge from '~/mods/curseforge';
 import { ProjectProvider } from '~/schema';
 
-const mods: Record<string, ProjectProvider> = {
-	curseforge,
-};
+const mods: Record<string, ProjectProvider> = {};
 
 export default mods;
-
-export {curseforge };
