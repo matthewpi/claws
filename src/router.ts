@@ -53,18 +53,29 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(categories[category]);
 		});
 
-		this.router.get('/api/v1/categories/:category/projects', withParams, ({ category }: { category: string }) => {
+		this.router.get('/api/v1/categories/:category/providers', withParams, ({ category }: { category: string }) => {
+			if (!(category in categories)) {
+				return missing('category not found');
+			}
+
+			const data: string[] = [];
+			if (categories[category].modProviders.length > 0) data.push('mods');
+			if (categories[category].projectProviders.length > 0) data.push('projects');
+
+			return this.json(data);
+		});
+
+		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: { category: string, provider: string }) => {
 			if (!(category in categories)) {
 				return missing('category not found');
 			}
 
 			const data: Provider[] = [];
-			data.push(...categories[category].projectProviders.map(p => ({ ...p, mods: false })));
-			data.push(...categories[category].modProviders.map(p => ({ ...p, mods: true })));
+			if (provider === 'mods') data.push(...categories[category].modProviders.map(p => ({ ...p, mods: true })));
+			else if (provider === 'projects') data.push(...categories[category].projectProviders.map(p => ({ ...p, mods: false })));
 
 			return this.json(data);
-		},
-		);
+		});
 	}
 
 	private createProjectRoutes(): void {
