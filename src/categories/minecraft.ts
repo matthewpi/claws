@@ -1,3 +1,4 @@
+import { curseforge } from '~/mods';
 import { paper, purpur, travertine, vanilla,waterfall } from '~/projects';
 import { Category } from '~/schema';
 
@@ -26,7 +27,12 @@ const minecraft: Category = {
 			name: vanilla.name,
 		},
 	],
-	modProviders: [],
+	modProviders: [
+		{
+			slug: curseforge.slug,
+			name: curseforge.name,
+		},
+	],
 };
 
 export default minecraft;
