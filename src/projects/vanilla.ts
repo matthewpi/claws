@@ -1,7 +1,7 @@
-import { Vanilla, Provider } from '~/api/vanilla';
-import { Project } from '~/schema';
+import { Vanilla, Provider } from 'src/api/minecraft/vanilla';
+import { ProjectProvider } from '~/schema';
 
-const vanilla: Project = {
+const vanilla: ProjectProvider = {
 	slug: 'vanilla',
 	name: 'Vanilla',
 };

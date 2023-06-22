@@ -1,7 +1,7 @@
-import { Provider, Purpur } from '~/api/purpur';
-import { Project } from '~/schema';
+import { Provider, Purpur } from 'src/api/minecraft/purpur';
+import { ProjectProvider } from '~/schema';
 
-const purpur: Project = {
+const purpur: ProjectProvider = {
 	slug: 'purpur',
 	name: 'Purpur',
 };

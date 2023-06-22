@@ -3,9 +3,9 @@ import purpur from '~/projects/purpur';
 import travertine from '~/projects/travertine';
 import waterfall from '~/projects/waterfall';
 import vanilla from "~/projects/vanilla";
-import { Project } from '~/schema';
+import { ProjectProvider } from '~/schema';
 
-const projects: Record<string, Project> = {
+const projects: Record<string, ProjectProvider> = {
 	paper,
 	purpur,
 	travertine,

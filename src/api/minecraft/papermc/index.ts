@@ -1,9 +1,9 @@
 import { StatusError } from 'itty-router-extras';
 
-import { Build, rawDataToBuild } from '~/api/papermc/build';
-import { Project, rawDataToProject } from '~/api/papermc/project';
-import { Provider } from '~/api/papermc/provider';
-import { rawDataToVersion, Version } from '~/api/papermc/version';
+import { Build, rawDataToBuild } from '~/api/minecraft/papermc/build';
+import { Project, rawDataToProject } from '~/api/minecraft/papermc/project';
+import { Provider } from '~/api/minecraft/papermc/provider';
+import { rawDataToVersion, Version } from '~/api/minecraft/papermc/version';
 import cachedFetch from '~/cachedFetch';
 
 class PaperMC {
@@ -141,7 +141,6 @@ class PaperMC {
 		const options = init || {};
 		options.headers = {
 			...options.headers,
-			'User-Agent': USER_AGENT,
 		};
 		const res = await fetch(this.baseURL + input, options);
 		switch (res.status) {

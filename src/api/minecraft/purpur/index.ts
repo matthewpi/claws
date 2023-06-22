@@ -1,9 +1,9 @@
 import { StatusError } from 'itty-router-extras';
 
-import { Build, rawDataToBuild } from '~/api/purpur/build';
-import { Project, rawDataToProject } from '~/api/purpur/project';
-import { Provider } from '~/api/purpur/provider';
-import { rawDataToVersion, Version } from '~/api/purpur/version';
+import { Build, rawDataToBuild } from '~/api/minecraft/purpur/build';
+import { Project, rawDataToProject } from '~/api/minecraft/purpur/project';
+import { Provider } from '~/api/minecraft/purpur/provider';
+import { rawDataToVersion, Version } from '~/api/minecraft/purpur/version';
 import cachedFetch from '~/cachedFetch';
 
 class Purpur {
@@ -135,7 +135,6 @@ class Purpur {
 		const options = init || {};
 		options.headers = {
 			...options.headers,
-			'User-Agent': USER_AGENT,
 		};
 		const res = await fetch(this.baseURL + input, options);
 		switch (res.status) {

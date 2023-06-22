@@ -1,10 +1,10 @@
-import { paper, purpur, travertine, waterfall, vanilla } from '~/projects';
+import { paper, purpur, travertine, vanilla,waterfall } from '~/projects';
 import { Category } from '~/schema';
 
 const minecraft: Category = {
 	slug: 'minecraft',
 	name: 'Minecraft',
-	projects: [
+	projectProviders: [
 		{
 			slug: paper.slug,
 			name: paper.name,
@@ -26,6 +26,7 @@ const minecraft: Category = {
 			name: vanilla.name,
 		},
 	],
+	modProviders: [],
 };
 
 export default minecraft;

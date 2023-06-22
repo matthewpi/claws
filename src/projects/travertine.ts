@@ -1,7 +1,7 @@
-import { PaperMC, Provider } from '~/api/papermc';
-import { Project } from '~/schema';
+import { PaperMC, Provider } from 'src/api/minecraft/papermc';
+import { ProjectProvider } from '~/schema';
 
-const travertine: Project = {
+const travertine: ProjectProvider = {
 	slug: 'travertine',
 	name: 'Travertine',
 };

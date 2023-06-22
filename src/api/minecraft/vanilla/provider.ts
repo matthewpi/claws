@@ -1,16 +1,16 @@
-import { Vanilla } from '~/api/vanilla';
-import { Build, Project, ProjectProvider, Version } from '~/schema';
+import { Vanilla } from '~/api/minecraft/vanilla/index';
+import { Build, ProjectProvider, ProviderHandler, Version } from '~/schema';
 
-export class Provider implements ProjectProvider {
+export class Provider implements ProviderHandler {
 	private readonly vanilla: Vanilla;
-	private readonly project: Project;
+	private readonly project: ProjectProvider;
 
-	public constructor(vanilla: Vanilla, project: Project) {
+	public constructor(vanilla: Vanilla, project: ProjectProvider) {
 		this.vanilla = vanilla;
 		this.project = project;
 	}
 
-	async getProject(): Promise<Project | null> {
+	async getProject(): Promise<ProjectProvider | null> {
 		const p = await this.vanilla.getManifest();
 		if (p === null) {
 			return null;
