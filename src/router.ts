@@ -98,108 +98,76 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	}
 
 	private createVersionRoutes(): void {
-		this.router.get(
-			'/api/v1/projects/:project/versions',
-			withParams,
-			async ({ project }: { project: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getProject();
-				if (res === null) {
-					return this.json(null);
-				}
-				return this.json(res.versions);
-			},
-		);
+		this.router.get('/api/v1/projects/:project/versions', withParams, async ({ project }: { project: string }) => {
+			if (!(project in projects)) return missing('project not found');
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version',
-			withParams,
-			async ({ project, version }: { project: string; version: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				return this.json(await provider.getVersion(version));
-			},
-		);
+			const p = projects[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds',
-			withParams,
-			async ({ project, version }: { project: string; version: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getVersion(version);
-				if (res === null) {
-					return this.json(null);
-				}
-				return this.json(res.builds);
-			},
-		);
+			const res = await provider.getProject();
+			if (res === null) return this.json(null);
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds/:build',
-			withParams,
-			async ({
-					   params: { project, version, build },
-					   url,
-				   }: {
-				params: { project: string; version: string; build: string };
-				url: string;
-			}) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getBuild(version, build);
-				if (res === null) {
-					return this.json(null);
-				}
-				res.download.url = this.getURL(url) + res.download.url;
-				return this.json(res);
-			},
-		);
+			return this.json(res.versions);
+		});
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds/:build/download',
-			withParams,
-			async ({ project, version, build }: { project: string; version: string; build: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getDownload(version, build);
-				if (res === null) {
-					return this.json(null);
-				}
-				return res;
-			},
-		);
+		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: { project: string; version: string }) => {
+			if (!(project in projects))return missing('project not found');
+
+			const p = projects[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			return this.json(await provider.getVersion(version));
+		});
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: { project: string; version: string }) => {
+			if (!(project in projects)) return missing('project not found');
+
+			const p = projects[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getVersion(version);
+			if (res === null) return this.json(null);
+
+			return this.json(res.builds);
+		});
+
+		interface BuildBody {
+			url: string;
+			params: {
+				project: string;
+				version: string;
+				build: string;
+			}
+		}
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({ params: { project, version, build }, url }: BuildBody) => {
+			if (!(project in projects)) return missing('project not found');
+
+			const p = projects[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getBuild(version, build);
+			if (res === null) return this.json(null);
+
+			res.download.url = this.getURL(url) + res.download.url;
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({ project, version, build }: { project: string; version: string; build: string }) => {
+			if (!(project in projects)) return missing('project not found');
+
+			const p = projects[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getDownload(version, build);
+			if (res === null) return this.json(null);
+
+			return res;
+		});
 	}
 
 	private createModpackRoutes(): void {
