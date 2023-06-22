@@ -1,12 +1,12 @@
 import { StatusError } from 'itty-router-extras';
 
-import { Build, rawDataToBuild } from '~/api/minecraft/purpur/build';
-import { Project, rawDataToProject } from '~/api/minecraft/purpur/project';
-import { Provider } from '~/api/minecraft/purpur/provider';
-import { rawDataToVersion, Version } from '~/api/minecraft/purpur/version';
 import cachedFetch from '~/cachedFetch';
+import {Project, rawDataToProject} from "~/api/minecraft/curseforge/project";
+import {Version} from "~/api/minecraft/curseforge/version";
+import {rawDataToBuild} from "~/api/minecraft/curseforge/build";
+import { Provider } from './provider';
 
-class Purpur {
+class Curseforge {
 	private readonly baseURL: string;
 
 	/**
@@ -149,4 +149,4 @@ class Purpur {
 	}
 }
 
-export { Provider, Purpur };
+export { Curseforge, Provider };

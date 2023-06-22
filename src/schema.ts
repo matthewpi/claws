@@ -6,7 +6,8 @@ export interface Build {
 export interface Category {
 	slug: string;
 	name: string;
-	projects: Project[];
+	projectProviders: ProjectProvider[];
+	modProviders: ModProvider[];
 }
 
 export interface Download {
@@ -22,11 +23,25 @@ export interface Download {
 	metadata: Record<string, string>;
 }
 
-export interface Project {
+// Base for all providers
+// i.e. PaperMC, Vanilla, etc.
+// i.e. CurseForge, Technic, etc.
+export interface Provider {
 	slug: string;
 	name: string;
+	provider?: ProviderHandler;
+}
+
+// Base for all project providers
+// i.e. Paper, Vanilla, etc.
+export interface ProjectProvider extends Provider {
 	versions?: string[];
-	provider?: ProjectProvider;
+}
+
+// Base for all mod/modpack provider
+// i.e. Curseforge, Technic, etc.
+export interface ModProvider extends Provider {
+	// TODO: Add any other fields
 }
 
 export interface Version {
@@ -34,8 +49,8 @@ export interface Version {
 	builds: string[];
 }
 
-export interface ProjectProvider {
-	getProject: () => Promise<Project | null>;
+export interface ProviderHandler {
+	getProject: () => Promise<ProjectProvider | null>;
 	getVersion: (version: string) => Promise<Version | null>;
 	getBuild: (version: string, build: string) => Promise<Build | null>;
 	getDownload: (version: string, build: string) => Promise<Response | null>;

@@ -1,7 +1,7 @@
 import { PaperMC, Provider } from 'src/api/minecraft/papermc';
-import { Project } from '~/schema';
+import { ProjectProvider } from '~/schema';
 
-const waterfall: Project = {
+const waterfall: ProjectProvider = {
 	slug: 'waterfall',
 	name: 'Waterfall',
 };

@@ -1,10 +1,11 @@
 import { paper, purpur, travertine, waterfall, vanilla } from '~/projects';
 import { Category } from '~/schema';
+import { curseforge } from '~/mods';
 
 const minecraft: Category = {
 	slug: 'minecraft',
 	name: 'Minecraft',
-	projects: [
+	projectProviders: [
 		{
 			slug: paper.slug,
 			name: paper.name,
@@ -24,6 +25,12 @@ const minecraft: Category = {
 		{
 			slug: vanilla.slug,
 			name: vanilla.name,
+		},
+	],
+	modProviders: [
+		{
+			slug: curseforge.slug,
+			name: curseforge.name,
 		},
 	],
 };

@@ -1,4 +1,4 @@
-import {Router as IttyRouter, RouterOptions} from 'itty-router';
+import { Router as IttyRouter, RouterOptions } from 'itty-router';
 import {
 	error as ittyError,
 	json as ittyJson,
@@ -7,13 +7,14 @@ import {
 	withParams,
 } from 'itty-router-extras';
 
-import categories from "~/categories";
+import categories from '~/categories';
 import projects from '~/projects';
+import { Provider } from '~/schema';
 
 export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private router: IttyRouter<TRequest, TMethods>;
 
-	constructor(options?:RouterOptions<TRequest>) {
+	constructor(options?: RouterOptions<TRequest>) {
 		this.router = IttyRouter(options);
 
 		this.router.options('*', (req: Request) => {
@@ -39,9 +40,8 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private createCategoryRoutes(): void {
 		this.router.get('/api/v1/categories', () => {
 			const data = [];
-			for (const k in categories) {
-				data.push(categories[k]);
-			}
+			data.push(...Object.keys(categories).map(k => ({ name: categories[k].name, slug: categories[k].slug })));
+
 			return this.json(data);
 		});
 
@@ -49,39 +49,39 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(category in categories)) {
 				return missing('category not found');
 			}
+
 			return this.json(categories[category]);
 		});
 
-		this.router.get(
-			'/api/v1/categories/:category/projects',
-			withParams,
-			({ category }: { category: string }) => {
-				if (!(category in categories)) {
-					return missing('category not found');
-				}
-				return this.json(categories[category].projects);
-			},
+		this.router.get('/api/v1/categories/:category/projects', withParams, ({ category }: { category: string }) => {
+			if (!(category in categories)) {
+				return missing('category not found');
+			}
+
+			const data: Provider[] = [];
+			data.push(...categories[category].projectProviders.map(p => ({ ...p, mods: false })));
+			data.push(...categories[category].modProviders.map(p => ({ ...p, mods: true })));
+
+			return this.json(data);
+		},
 		);
 	}
 
 	private createProjectRoutes(): void {
 		this.router.get('/api/v1/projects', () => {
 			const data = [];
-			for (const k in projects) {
-				data.push({ name: projects[k].name, slug: projects[k].slug });
-			}
+			data.push(...Object.keys(projects).map(k => ({ name: projects[k].name, slug: projects[k].slug })));
+
 			return this.json(data);
 		});
 
 		this.router.get('/api/v1/projects/:project', withParams, async ({ project }: { project: string }) => {
-			if (!(project in projects)) {
-				return missing('project not found');
-			}
+			if (!(project in projects)) return missing('project not found');
+
 			const p = projects[project];
 			const provider = p.provider;
-			if (provider === undefined) {
-				throw new Error('fuck');
-			}
+			if (provider === undefined) throw new Error('fuck');
+
 			return this.json(await provider.getProject());
 		});
 	}
@@ -220,7 +220,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 		r.headers.set('Access-Control-Allow-Origin', '*');
 		r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
 		r.headers.set('Cache-Control', 'no-store');
-		r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+		r.headers.set('Content-Security-Policy', 'frame-ancestors \'none\'');
 		r.headers.set('X-Frame-Options', 'DENY');
 		return r;
 	}
@@ -230,7 +230,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 		r.headers.set('Access-Control-Allow-Origin', '*');
 		r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
 		r.headers.set('Cache-Control', 'no-store');
-		r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+		r.headers.set('Content-Security-Policy', 'frame-ancestors \'none\'');
 		r.headers.set('X-Frame-Options', 'DENY');
 		return r;
 	}
@@ -240,7 +240,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 		r.headers.set('Access-Control-Allow-Origin', '*');
 		r.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
 		r.headers.set('Cache-Control', 'no-store');
-		r.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+		r.headers.set('Content-Security-Policy', 'frame-ancestors \'none\'');
 		r.headers.set('X-Frame-Options', 'DENY');
 		return r;
 	}

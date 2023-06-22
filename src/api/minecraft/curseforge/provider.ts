@@ -1,17 +1,17 @@
-import { Purpur } from '~/api/minecraft/purpur';
-import { Build, Project, ProjectProvider, Version } from '~/schema';
+import { Build, ProjectProvider, ProviderHandler, Version } from '~/schema';
+import {Curseforge} from "~/api/minecraft/curseforge/index";
 
-export class Provider implements ProjectProvider {
-	private readonly purpur: Purpur;
-	private readonly project: Project;
+export class Provider implements ProviderHandler {
+	private readonly curseforge: Curseforge;
+	private readonly project: ProjectProvider;
 
-	public constructor(purpur: Purpur, project: Project) {
-		this.purpur = purpur;
+	public constructor(curseforge: Curseforge, project: ProjectProvider) {
+		this.curseforge = curseforge;
 		this.project = project;
 	}
 
-	async getProject(): Promise<Project | null> {
-		const p = await this.purpur.getProject(this.project.slug);
+	async getProject(): Promise<ProjectProvider | null> {
+		const p = await this.curseforge.getProject(this.project.slug);
 		if (p === null) {
 			return null;
 		}
@@ -23,7 +23,7 @@ export class Provider implements ProjectProvider {
 	}
 
 	async getVersion(version: string): Promise<Version | null> {
-		const v = await this.purpur.getVersion(this.project.slug, version);
+		const v = await this.curseforge.getVersion(this.project.slug, version);
 		if (v === null) {
 			return v;
 		}
@@ -46,7 +46,7 @@ export class Provider implements ProjectProvider {
 		}
 
 		// TODO: Catch failed build and keep trying lower builds until a maximum of 5 failed builds are reached.
-		const b = await this.purpur.getBuild(this.project.slug, version, build);
+		const b = await this.curseforge.getBuild(this.project.slug, version, build);
 		if (b === null) {
 			return null;
 		}
@@ -65,6 +65,6 @@ export class Provider implements ProjectProvider {
 	}
 
 	async getDownload(version: string, build: string): Promise<Response | null> {
-		return this.purpur.getDownload(this.project.slug, version, build);
+		return this.curseforge.getDownload(this.project.slug, version, build);
 	}
 }
