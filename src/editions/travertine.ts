@@ -1,9 +1,11 @@
 import { PaperMC, Provider } from 'src/api/minecraft/papermc';
-import { ProjectProvider } from '~/schema';
 
-const travertine: ProjectProvider = {
+import { EditionProvider, ProviderType } from '~/schema';
+
+const travertine: EditionProvider = {
 	slug: 'travertine',
 	name: 'Travertine',
+	type: ProviderType.EDITION,
 };
 
 travertine.provider = new Provider(new PaperMC('https://papermc.io/api/v2'), travertine);

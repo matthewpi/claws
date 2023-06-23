@@ -1,15 +1,10 @@
 import { Router as IttyRouter, RouterOptions } from 'itty-router';
-import {
-	error as ittyError,
-	json as ittyJson,
-	missing,
-	StatusError,
-	withParams,
-} from 'itty-router-extras';
+import { error as ittyError, json as ittyJson, missing, StatusError, withParams } from 'itty-router-extras';
+import editions from 'src/editions';
 
 import categories from '~/categories';
 import projects from '~/projects';
-import { Provider } from '~/schema';
+import { EditionProvider, Provider, ProviderType } from '~/schema';
 
 export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private router: IttyRouter<TRequest, TMethods>;
@@ -60,19 +55,22 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 
 			const data: string[] = [];
 			if (categories[category].modProviders.length > 0) data.push('mods');
-			if (categories[category].projectProviders.length > 0) data.push('projects');
+			if (categories[category].editionProviders.length > 0) data.push('editions');
 
 			return this.json(data);
 		});
 
-		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: { category: string, provider: string }) => {
+		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: {
+			category: string,
+			provider: string
+		}) => {
 			if (!(category in categories)) {
 				return missing('category not found');
 			}
 
 			const data: Provider[] = [];
 			if (provider === 'mods') data.push(...categories[category].modProviders);
-			else if (provider === 'projects') data.push(...categories[category].projectProviders);
+			else if (provider === 'editions') data.push(...categories[category].editionProviders);
 
 			return this.json(data);
 		});
@@ -81,7 +79,11 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private createProjectRoutes(): void {
 		this.router.get('/api/v1/projects', () => {
 			const data = [];
-			data.push(...Object.keys(projects).map(k => ({ name: projects[k].name, slug: projects[k].slug })));
+			data.push(...Object.keys(projects).map(k => ({
+				name: projects[k].name,
+				slug: projects[k].slug,
+				type: projects[k].type,
+			})));
 
 			return this.json(data);
 		});
@@ -99,32 +101,38 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 
 	private createVersionRoutes(): void {
 		this.router.get('/api/v1/projects/:project/versions', withParams, async ({ project }: { project: string }) => {
-			if (!(project in projects)) return missing('project not found');
+			if (!(project in editions)) return missing('project not found');
 
-			const p = projects[project];
+			const p = editions[project];
 			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getProject();
-			if (res === null) return this.json(null);
+			if (res === null || res.type !== ProviderType.EDITION) return this.json(null);
 
-			return this.json(res.versions);
+			return this.json((res as EditionProvider).versions);
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: { project: string; version: string }) => {
-			if (!(project in projects))return missing('project not found');
+		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
 
-			const p = projects[project];
+			const p = editions[project];
 			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			return this.json(await provider.getVersion(version));
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: { project: string; version: string }) => {
-			if (!(project in projects)) return missing('project not found');
+		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
 
-			const p = projects[project];
+			const p = editions[project];
 			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
@@ -140,12 +148,19 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 				project: string;
 				version: string;
 				build: string;
-			}
+			};
 		}
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({ params: { project, version, build }, url }: BuildBody) => {
-			if (!(project in projects)) return missing('project not found');
 
-			const p = projects[project];
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({
+			params: {
+				project,
+				version,
+				build,
+			}, url,
+		}: BuildBody) => {
+			if (!(project in editions)) return missing('project not found');
+
+			const p = editions[project];
 			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
@@ -156,10 +171,18 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({ project, version, build }: { project: string; version: string; build: string }) => {
-			if (!(project in projects)) return missing('project not found');
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({
+																													 project,
+																													 version,
+																													 build,
+																												 }: {
+			project: string;
+			version: string;
+			build: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
 
-			const p = projects[project];
+			const p = editions[project];
 			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 

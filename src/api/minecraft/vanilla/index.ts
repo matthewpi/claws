@@ -35,12 +35,12 @@ class Vanilla {
 	 * @returns ?
 	 */
 	async getVersion(version: string): Promise<Version | null> {
-		const manifest = await this.getManifest()
+		const manifest = await this.getManifest();
 		if (manifest === null) {
 			return null;
 		}
 
-		const v = manifest.versions.filter(value => value.version === version)
+		const v = manifest.versions.filter(value => value.version === version);
 		if (v.length === 0) {
 			return null;
 		}
@@ -54,7 +54,7 @@ class Vanilla {
 	 * @returns ?
 	 */
 	async getBuild(version: string): Promise<Build | null> {
-		const fetchedVersion = await this.getVersion(version)
+		const fetchedVersion = await this.getVersion(version);
 		if (fetchedVersion === null) {
 			return null;
 		}
@@ -73,9 +73,9 @@ class Vanilla {
 	 * @returns ?
 	 */
 	async getDownload(version: string): Promise<Response | null> {
-		const build = await this.getBuild(version)
+		const build = await this.getBuild(version);
 		if (build === null) {
-			return null
+			return null;
 		}
 
 		const res = await this.fetch(
@@ -148,4 +148,4 @@ class Vanilla {
 	}
 }
 
-export { Vanilla, Provider };
+export { Provider,Vanilla };
