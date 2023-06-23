@@ -60,7 +60,10 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(data);
 		});
 
-		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: { category: string, provider: string }) => {
+		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: {
+			category: string,
+			provider: string
+		}) => {
 			if (!(category in categories)) {
 				return missing('category not found');
 			}
@@ -76,7 +79,11 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private createProjectRoutes(): void {
 		this.router.get('/api/v1/projects', () => {
 			const data = [];
-			data.push(...Object.keys(projects).map(k => ({ name: projects[k].name, slug: projects[k].slug, type: projects[k].type })));
+			data.push(...Object.keys(projects).map(k => ({
+				name: projects[k].name,
+				slug: projects[k].slug,
+				type: projects[k].type,
+			})));
 
 			return this.json(data);
 		});
@@ -106,8 +113,11 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json((res as EditionProvider).versions);
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: { project: string; version: string }) => {
-			if (!(project in editions))return missing('project not found');
+		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
 			const provider = p.provider;
@@ -116,7 +126,10 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(await provider.getVersion(version));
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: { project: string; version: string }) => {
+		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
@@ -135,9 +148,16 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 				project: string;
 				version: string;
 				build: string;
-			}
+			};
 		}
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({ params: { project, version, build }, url }: BuildBody) => {
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({
+			params: {
+				project,
+				version,
+				build,
+			}, url,
+		}: BuildBody) => {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
@@ -151,7 +171,15 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({ project, version, build }: { project: string; version: string; build: string }) => {
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({
+																													 project,
+																													 version,
+																													 build,
+																												 }: {
+			project: string;
+			version: string;
+			build: string
+		}) => {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];

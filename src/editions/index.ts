@@ -1,7 +1,7 @@
 import paper from '~/editions/paper';
 import purpur from '~/editions/purpur';
 import travertine from '~/editions/travertine';
-import vanilla from "~/editions/vanilla";
+import vanilla from '~/editions/vanilla';
 import waterfall from '~/editions/waterfall';
 import { EditionProvider } from '~/schema';
 

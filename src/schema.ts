@@ -24,7 +24,7 @@ export interface Download {
 }
 
 export enum ProviderType {
-	EDITION= 'edition',
+	EDITION = 'edition',
 	MOD = 'mod',
 }
 

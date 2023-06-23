@@ -1,4 +1,4 @@
-import { Provider,Vanilla } from 'src/api/minecraft/vanilla';
+import { Provider, Vanilla } from 'src/api/minecraft/vanilla';
 
 import { EditionProvider, ProviderType } from '~/schema';
 

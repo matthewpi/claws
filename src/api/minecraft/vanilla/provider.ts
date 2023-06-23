@@ -30,7 +30,7 @@ export class Provider implements ProviderHandler {
 		}
 		return {
 			name: v.version,
-			builds: ["latest"],
+			builds: ['latest'],
 		};
 	}
 

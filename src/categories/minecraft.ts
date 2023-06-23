@@ -1,4 +1,4 @@
-import { paper, purpur, travertine, vanilla,waterfall } from 'src/editions';
+import { paper, purpur, travertine, vanilla, waterfall } from 'src/editions';
 
 import { curseforge } from '~/mods';
 import { Category } from '~/schema';
