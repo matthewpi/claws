@@ -22,7 +22,7 @@ class PaperMC {
 	 * @returns ?
 	 */
 	async getProjects(): Promise<Project[] | null> {
-		const res = await this.cachedFetch('/editions');
+		const res = await this.cachedFetch('/projects');
 		if (res === null) {
 			return null;
 		}
