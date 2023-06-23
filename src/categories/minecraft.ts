@@ -1,11 +1,12 @@
+import { paper, purpur, travertine, vanilla,waterfall } from 'src/editions';
+
 import { curseforge } from '~/mods';
-import { paper, purpur, travertine, vanilla,waterfall } from '~/projects';
 import { Category } from '~/schema';
 
 const minecraft: Category = {
 	slug: 'minecraft',
 	name: 'Minecraft',
-	projectProviders: [
+	editionProviders: [
 		{
 			slug: paper.slug,
 			name: paper.name,

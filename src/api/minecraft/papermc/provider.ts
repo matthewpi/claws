@@ -1,16 +1,16 @@
 import { PaperMC } from '~/api/minecraft/papermc/index';
-import { Build, ProjectProvider, ProviderHandler, Version } from '~/schema';
+import { Build, EditionProvider, ProviderHandler, ProviderType, Version } from '~/schema';
 
 export class Provider implements ProviderHandler {
 	private readonly paperMC: PaperMC;
-	private readonly project: ProjectProvider;
+	private readonly project: EditionProvider;
 
-	public constructor(paperMC: PaperMC, project: ProjectProvider) {
+	public constructor(paperMC: PaperMC, project: EditionProvider) {
 		this.paperMC = paperMC;
 		this.project = project;
 	}
 
-	async getProject(): Promise<ProjectProvider | null> {
+	async getProject(): Promise<EditionProvider | null> {
 		const p = await this.paperMC.getProject(this.project.slug);
 		if (p === null) {
 			return null;
@@ -19,6 +19,7 @@ export class Provider implements ProviderHandler {
 			slug: this.project.slug,
 			name: this.project.name,
 			versions: p.versions,
+			type: ProviderType.EDITION,
 		};
 	}
 

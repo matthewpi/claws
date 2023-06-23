@@ -1,8 +1,8 @@
-import { ProjectProvider } from '~/schema';
+import { EditionProvider } from '~/schema';
 
 import curseforge from './curseforge';
 
-const mods: Record<string, ProjectProvider> = {
+const mods: Record<string, EditionProvider> = {
 	curseforge,
 };
 
