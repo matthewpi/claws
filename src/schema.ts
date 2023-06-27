@@ -1,6 +1,6 @@
-export interface Build {
+export interface Build<T = Download> {
 	id: string;
-	download: Download;
+	download: T;
 }
 
 export interface Category {
@@ -22,6 +22,14 @@ export interface Download {
 	};
 	metadata: Record<string, string>;
 }
+
+export interface ModDownload extends Download {
+	serverPack?: boolean;
+	serverPackFileId?: number;
+}
+
+export type ModBuild = Build<ModDownload>;
+
 
 export enum ProviderType {
 	EDITION = 'edition',
@@ -54,9 +62,28 @@ export interface Version {
 	builds: string[];
 }
 
+export interface Mod {
+	id: string;
+	name: string;
+	icon?: string;
+}
+
 export interface ProviderHandler {
 	getProject: () => Promise<Provider | null>;
+}
+
+export interface EditionProviderHandler extends ProviderHandler {
+	getProject: () => Promise<EditionProvider | null>;
 	getVersion: (version: string) => Promise<Version | null>;
 	getBuild: (version: string, build: string) => Promise<Build | null>;
 	getDownload: (version: string, build: string) => Promise<Response | null>;
+}
+
+export interface ModProviderHandler extends ProviderHandler {
+	searchMods: (query: string) => Promise<Mod[]>;
+
+	getProject: () => Promise<ModProvider | null>;
+	getFiles: (mod: string) => Promise<ModBuild[] | null>;
+	getFile: (mod: string, fileId: string) => Promise<ModBuild | null>;
+	getDownload: (mod: string, fileId: string) => Promise<Response | null>;
 }

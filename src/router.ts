@@ -1,10 +1,18 @@
 import { Router as IttyRouter, RouterOptions } from 'itty-router';
-import { error as ittyError, json as ittyJson, missing, StatusError, withParams } from 'itty-router-extras';
+import {
+	error as ittyError,
+	json as ittyJson,
+	missing, status,
+	StatusError,
+	withContent,
+	withParams,
+} from 'itty-router-extras';
 import editions from 'src/editions';
 
 import categories from '~/categories';
+import mods from '~/mods';
 import projects from '~/projects';
-import { EditionProvider, Provider, ProviderType } from '~/schema';
+import { EditionProvider, EditionProviderHandler, ModProviderHandler, Provider, ProviderType } from '~/schema';
 
 export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private router: IttyRouter<TRequest, TMethods>;
@@ -120,7 +128,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
-			const provider = p.provider;
+			const provider = p.provider as EditionProviderHandler;
 			if (provider === undefined) throw new Error();
 
 			return this.json(await provider.getVersion(version));
@@ -133,7 +141,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
-			const provider = p.provider;
+			const provider = p.provider as EditionProviderHandler;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getVersion(version);
@@ -151,50 +159,112 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			};
 		}
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams, async ({
-			params: {
-				project,
-				version,
-				build,
-			}, url,
-		}: BuildBody) => {
-			if (!(project in editions)) return missing('project not found');
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams,
+			async ({
+					   params: {
+						   project,
+						   version,
+						   build,
+					   }, url,
+				   }: BuildBody) => {
+				if (!(project in editions)) return missing('project not found');
 
-			const p = editions[project];
-			const provider = p.provider;
+				const p = editions[project];
+				const provider = p.provider as EditionProviderHandler;
+				if (provider === undefined) throw new Error();
+
+				const res = await provider.getBuild(version, build);
+				if (res === null) return this.json(null);
+
+				res.download.url = this.getURL(url) + res.download.url;
+				return this.json(res);
+			});
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams,
+			async ({
+					   project,
+					   version,
+					   build,
+				   }: {
+				project: string;
+				version: string;
+				build: string
+			}) => {
+				if (!(project in editions)) return missing('project not found');
+
+				const p = editions[project];
+				const provider = p.provider as EditionProviderHandler;
+				if (provider === undefined) throw new Error();
+
+				const res = await provider.getDownload(version, build);
+				if (res === null) return this.json(null);
+
+				return res;
+			});
+	}
+
+	private createModpackRoutes(): void {
+		this.router.get('/api/v1/projects/:project/mods', async ({ params, query: queryParams }: {params: { project: string}, query: { query?: string}}) => {
+			const { project } = params;
+			const { query } = queryParams;
+
+			if (!(project in mods)) return missing('project not found');
+			if (!query) return status(400, 'query not passed');
+
+			const p = mods[project];
+			const provider = p.provider as ModProviderHandler;
 			if (provider === undefined) throw new Error();
 
-			const res = await provider.getBuild(version, build);
+			const res = await provider.searchMods(query);
 			if (res === null) return this.json(null);
 
-			res.download.url = this.getURL(url) + res.download.url;
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams, async ({
-																													 project,
-																													 version,
-																													 build,
-																												 }: {
-			project: string;
-			version: string;
-			build: string
-		}) => {
-			if (!(project in editions)) return missing('project not found');
+		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params }: {params: { project: string, mod: string}}) => {
+			const { project, mod } = params;
 
-			const p = editions[project];
-			const provider = p.provider;
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider as ModProviderHandler;
 			if (provider === undefined) throw new Error();
 
-			const res = await provider.getDownload(version, build);
+			const res = await provider.getFiles(mod);
+			if (res === null) return this.json(null);
+
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params }: {params: { project: string, mod: string, file: string }}) => {
+			const { project, mod, file } = params;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider as ModProviderHandler;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getFile(mod, file);
+			if (res === null) return this.json(null);
+
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file/download', async ({ params }: {params: { project: string, mod: string, file: string }}) => {
+			const { project, mod, file } = params;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider as ModProviderHandler;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getDownload(mod, file);
 			if (res === null) return this.json(null);
 
 			return res;
 		});
-	}
-
-	private createModpackRoutes(): void {
-
 	}
 
 	public handleRequest(request: TRequest): Promise<Response> {

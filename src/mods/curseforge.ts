@@ -8,6 +8,6 @@ const curseforge: EditionProvider = {
 	type: ProviderType.MOD,
 };
 
-curseforge.provider = new Provider(new Curseforge('https://api.papermc.io/v2'), curseforge);
+curseforge.provider = new Provider(new Curseforge('https://api.curseforge.com/v1'), curseforge);
 
 export default curseforge;

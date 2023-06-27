@@ -1,7 +1,7 @@
 import { PaperMC } from '~/api/minecraft/papermc/index';
-import { Build, EditionProvider, ProviderHandler, ProviderType, Version } from '~/schema';
+import { Build, EditionProvider, EditionProviderHandler, ProviderHandler, ProviderType, Version } from '~/schema';
 
-export class Provider implements ProviderHandler {
+export class Provider implements EditionProviderHandler {
 	private readonly paperMC: PaperMC;
 	private readonly project: EditionProvider;
 

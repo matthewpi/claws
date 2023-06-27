@@ -1,7 +1,7 @@
 import { Vanilla } from '~/api/minecraft/vanilla/index';
-import { Build, EditionProvider, ProviderHandler, ProviderType, Version } from '~/schema';
+import { Build, EditionProvider, EditionProviderHandler, ProviderHandler, ProviderType, Version } from '~/schema';
 
-export class Provider implements ProviderHandler {
+export class Provider implements EditionProviderHandler {
 	private readonly vanilla: Vanilla;
 	private readonly project: EditionProvider;
 

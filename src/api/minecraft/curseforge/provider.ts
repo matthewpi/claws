@@ -1,72 +1,82 @@
-import { Build, EditionProvider, ProviderHandler, ProviderType, Version } from '~/schema';
+import { FileHashAlgorithms, ModsSearchSortField } from '~/api/minecraft/curseforge/types/enums';
+import { Build, EditionProvider, Mod, ModBuild, ModProvider, ModProviderHandler, ProviderType } from '~/schema';
 
 import { Curseforge } from '.';
 
-export class Provider implements ProviderHandler {
+export class Provider implements ModProviderHandler {
 	private readonly curseforge: Curseforge;
 	private readonly project: EditionProvider;
 
-	public constructor(paperMC: Curseforge, project: EditionProvider) {
-		this.curseforge = paperMC;
+	public constructor(curseforge: Curseforge, project: EditionProvider) {
+		this.curseforge = curseforge;
 		this.project = project;
 	}
 
-	async getProject(): Promise<EditionProvider | null> {
-		const p = await this.curseforge.getProject(this.project.slug);
-		if (p === null) {
-			return null;
-		}
-		return {
-			slug: this.project.slug,
-			name: this.project.name,
-			versions: p.versions,
-			type: ProviderType.EDITION,
-		};
+	async searchMods(query: string): Promise<Mod[]> {
+		let mods = await this.curseforge.searchMods({ searchFilter: query, sortField: ModsSearchSortField.TOTAL_DOWNLOADS, sortOrder: 'desc' });
+		mods = mods.filter(m => m.latestFiles.filter(f => f.isServerPack || !!f.serverPackFileId).length > 0);
+
+		return mods.map((mod) => ({
+			id: mod.id.toString(),
+			name: mod.name,
+			icon: mod.logo.url,
+		}));
 	}
 
-	async getVersion(version: string): Promise<Version | null> {
-		const v = await this.curseforge.getVersion(this.project.slug, version);
-		if (v === null) {
-			return v;
-		}
-		return {
-			name: v.version,
-			builds: v.builds.map((v) => v.toString()),
-		};
-	}
+	async getFiles(mod: string): Promise<ModBuild[] | null> {
+		let files = await this.curseforge.getFiles(Number(mod), {});
+		files = files.filter(f => f.isServerPack || !!f.serverPackFileId);
 
-	async getBuild(version: string, build: string): Promise<Build | null> {
-		if (build === 'latest') {
-			const latestBuild = await this.getVersion(version);
-			if (latestBuild === null) {
-				return null;
-			}
-			build = latestBuild.builds[0] || '';
-			if (build === '') {
-				return null;
-			}
-		}
-
-		const b = await this.curseforge.getBuild(this.project.slug, version, build);
-		if (b === null) {
-			return null;
-		}
-		const d = b.downloads.application;
-		return {
-			id: build,
+		return files.map((file) => ({
+			id: file.id.toString(),
 			download: {
-				name: d.name,
-				url: `/api/v1/projects/${this.project.slug}/versions/${version}/builds/${build}/download`,
-				builtAt: b.time,
+				name: file.fileName,
+				url: file.downloadUrl,
+				builtAt: file.fileDate,
 				checksums: {
-					sha256: d.sha256,
+					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
+					md5: file.hashes.find(h => h.algo === FileHashAlgorithms.MD5)?.value,
 				},
+				serverPack: file.isServerPack ?? false,
+				serverPackFileId: file.serverPackFileId ?? undefined,
+				metadata: {},
+			},
+		}));
+	}
+
+	async getFile(mod: string, fileId: string): Promise<ModBuild | null> {
+		const file = await this.curseforge.getFile(Number(mod), Number(fileId));
+		if (file === undefined) return null;
+
+		return {
+			id: file.id.toString(),
+			download: {
+				name: file.fileName,
+				url: file.downloadUrl,
+				builtAt: file.fileDate,
+				checksums: {
+					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
+					md5: file.hashes.find(h => h.algo === FileHashAlgorithms.MD5)?.value,
+				},
+				serverPack: file.isServerPack ?? false,
+				serverPackFileId: file.serverPackFileId ?? undefined,
 				metadata: {},
 			},
 		};
 	}
 
-	async getDownload(version: string, build: string): Promise<Response | null> {
-		return this.curseforge.getDownload(this.project.slug, version, build);
+	async getDownload(mod: string, fileId: string): Promise<Response | null> {
+		const file = await this.curseforge.getServerFile(Number(mod), Number(fileId));
+		if (file === undefined) return null;
+
+		return this.curseforge.getDownload(file);
+	}
+
+	async getProject(): Promise<ModProvider | null> {
+		return {
+			slug: this.project.slug,
+			name: this.project.name,
+			type: ProviderType.MOD,
+		};
 	}
 }
