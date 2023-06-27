@@ -12,7 +12,7 @@ export class Provider implements ModProviderHandler {
 		this.project = project;
 	}
 
-	async searchMods(query: string): Promise<Mod[]> {
+	async searchMods(query?: string): Promise<Mod[]> {
 		let mods = await this.curseforge.searchMods({ searchFilter: query, sortField: ModsSearchSortField.TOTAL_DOWNLOADS, sortOrder: 'desc' });
 		mods = mods.filter(m => m.latestFiles.filter(f => f.isServerPack || !!f.serverPackFileId).length > 0);
 

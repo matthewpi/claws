@@ -80,7 +80,7 @@ export interface EditionProviderHandler extends ProviderHandler {
 }
 
 export interface ModProviderHandler extends ProviderHandler {
-	searchMods: (query: string) => Promise<Mod[]>;
+	searchMods: (query?: string) => Promise<Mod[]>;
 
 	getProject: () => Promise<ModProvider | null>;
 	getFiles: (mod: string) => Promise<ModBuild[] | null>;

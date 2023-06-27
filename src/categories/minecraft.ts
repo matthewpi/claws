@@ -10,28 +10,34 @@ const minecraft: Category = {
 		{
 			slug: paper.slug,
 			name: paper.name,
+			type: paper.type,
 		},
 		{
 			slug: purpur.slug,
 			name: purpur.name,
+			type: purpur.type,
 		},
 		{
 			slug: travertine.slug,
 			name: travertine.name,
+			type: travertine.type,
 		},
 		{
 			slug: waterfall.slug,
 			name: waterfall.name,
+			type: waterfall.type,
 		},
 		{
 			slug: vanilla.slug,
 			name: vanilla.name,
+			type: vanilla.type,
 		},
 	],
 	modProviders: [
 		{
 			slug: curseforge.slug,
 			name: curseforge.name,
+			type: curseforge.type,
 		},
 	],
 };

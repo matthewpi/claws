@@ -33,7 +33,9 @@ class Curseforge {
 		if(options) {
 			for(const key of Object.keys(options)){
 				// @ts-ignore
-				uri.searchParams.set(key, options[key]);
+				if (options[key] !== undefined && options[key] !== null)
+					// @ts-ignore
+					uri.searchParams.set(key, options[key]);
 			}
 		}
 

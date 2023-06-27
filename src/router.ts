@@ -209,7 +209,6 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			const { query } = queryParams;
 
 			if (!(project in mods)) return missing('project not found');
-			if (!query) return status(400, 'query not passed');
 
 			const p = mods[project];
 			const provider = p.provider as ModProviderHandler;
