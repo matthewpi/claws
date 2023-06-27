@@ -19,6 +19,8 @@ export class Provider implements ModProviderHandler {
 		return mods.map((mod) => ({
 			id: mod.id.toString(),
 			name: mod.name,
+			latestGameVersion: mod?.latestFiles[0]?.gameVersions[0] ?? 'latest',
+			latestVersion: mod?.latestFiles[0]?.displayName ?? 'latest',
 			icon: mod.logo.url,
 		}));
 	}

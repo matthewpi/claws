@@ -65,6 +65,10 @@ export interface Version {
 export interface Mod {
 	id: string;
 	name: string;
+	// Minecraft version of the latest build
+	latestGameVersion: string;
+	// Version of the latest build
+	latestVersion: string;
 	icon?: string;
 }
 
