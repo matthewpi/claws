@@ -25,15 +25,15 @@ export class Provider implements ModProviderHandler {
 		}));
 	}
 
-	async getFiles(mod: string): Promise<ModBuild[] | null> {
-		let files = await this.curseforge.getFiles(Number(mod), {});
+	async getFiles(mod: string, serverOnly: boolean): Promise<ModBuild[] | null> {
+		let files = await (serverOnly ? this.curseforge.getServerFiles : this.curseforge.getFiles)(Number(mod), {});
 		files = files.filter(f => f.isServerPack || !!f.serverPackFileId);
 
 		return files.map((file) => ({
 			id: file.id.toString(),
 			download: {
 				name: file.fileName,
-				url: file.downloadUrl,
+				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
 				builtAt: file.fileDate,
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
@@ -54,7 +54,7 @@ export class Provider implements ModProviderHandler {
 			id: file.id.toString(),
 			download: {
 				name: file.fileName,
-				url: file.downloadUrl,
+				url: `/api/v1/projects/${this.project.slug}/mods/${mod}/files/${fileId}/download`,
 				builtAt: file.fileDate,
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,

@@ -204,7 +204,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	}
 
 	private createModpackRoutes(): void {
-		this.router.get('/api/v1/projects/:project/mods', async ({ params, query: queryParams }: {params: { project: string}, query: { query?: string}}) => {
+		this.router.get('/api/v1/projects/:project/mods', async ({ params, query: queryParams }: {params: { project: string}, query: { query?: string}, url: string}) => {
 			const { project } = params;
 			const { query } = queryParams;
 
@@ -220,8 +220,9 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params }: {params: { project: string, mod: string}}) => {
-			const { project, mod } = params;
+		// Passing ?serverOnly=true will drastically increase the response time as it has to perform a lot of extra http requests.
+		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params, url }: {params: { project: string, mod: string, serverOnly?: boolean}, url: string}) => {
+			const { project, mod, serverOnly } = params;
 
 			if (!(project in mods)) return missing('project not found');
 
@@ -229,13 +230,14 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			const provider = p.provider as ModProviderHandler;
 			if (provider === undefined) throw new Error();
 
-			const res = await provider.getFiles(mod);
+			const res = await provider.getFiles(mod, serverOnly ?? false);
 			if (res === null) return this.json(null);
 
+			for (const file of res) file.download.url = this.getURL(url) + file.download.url;
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params }: {params: { project: string, mod: string, file: string, serverOnly?: boolean }}) => {
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params, url }: {params: { project: string, mod: string, file: string, serverOnly?: boolean }, url: string}) => {
 			const { project, mod, file, serverOnly } = params;
 
 			if (!(project in mods)) return missing('project not found');
@@ -247,6 +249,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			const res = await provider.getFile(mod, file, serverOnly ?? false);
 			if (res === null) return this.json(null);
 
+			res.download.url = this.getURL(url) + res.download.url;
 			return this.json(res);
 		});
 
