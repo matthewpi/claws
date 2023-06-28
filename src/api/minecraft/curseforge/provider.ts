@@ -65,8 +65,14 @@ export class Provider implements ModProviderHandler {
 
 	async getFile(mod: string, fileId: string, serverOnly: boolean): Promise<ModBuild | null> {
 		let file;
-		if (fileId === 'latest') file = await (serverOnly ? this.curseforge.getServerFiles(Number(mod), {}) : this.curseforge.getFiles(Number(mod), {})).then(f => f[0]);
-		else file = await (serverOnly ? this.curseforge.getServerFile(Number(mod), fileId) : this.curseforge.getFile(Number(mod), Number(fileId)));
+		if (fileId === 'latest') {
+			const latestFile = await this.curseforge.getFiles(Number(mod), {}).then(files => files[0]);
+			if (serverOnly && latestFile) {
+				if (latestFile?.isServerPack) file = latestFile;
+				else file = await this.curseforge.getServerFile(Number(mod), latestFile.id);
+			} else file = latestFile;
+		}
+		else file = await (serverOnly ? this.curseforge.getServerFile(Number(mod), Number(fileId)) : this.curseforge.getFile(Number(mod), Number(fileId)));
 
 		if (file === undefined) return null;
 
