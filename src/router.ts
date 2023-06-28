@@ -235,8 +235,8 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params }: {params: { project: string, mod: string, file: string }}) => {
-			const { project, mod, file } = params;
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params }: {params: { project: string, mod: string, file: string, serverOnly?: boolean }}) => {
+			const { project, mod, file, serverOnly } = params;
 
 			if (!(project in mods)) return missing('project not found');
 
@@ -244,7 +244,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			const provider = p.provider as ModProviderHandler;
 			if (provider === undefined) throw new Error();
 
-			const res = await provider.getFile(mod, file);
+			const res = await provider.getFile(mod, file, serverOnly ?? false);
 			if (res === null) return this.json(null);
 
 			return this.json(res);
