@@ -88,6 +88,6 @@ export interface ModProviderHandler extends ProviderHandler {
 
 	getProject: () => Promise<ModProvider | null>;
 	getFiles: (mod: string) => Promise<ModBuild[] | null>;
-	getFile: (mod: string, fileId: string) => Promise<ModBuild | null>;
+	getFile: (mod: string, fileId: string, serverOnly: boolean) => Promise<ModBuild | null>;
 	getDownload: (mod: string, fileId: string) => Promise<Response | null>;
 }

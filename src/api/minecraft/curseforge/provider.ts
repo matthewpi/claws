@@ -46,8 +46,8 @@ export class Provider implements ModProviderHandler {
 		}));
 	}
 
-	async getFile(mod: string, fileId: string): Promise<ModBuild | null> {
-		const file = await this.curseforge.getFile(Number(mod), Number(fileId));
+	async getFile(mod: string, fileId: string, serverOnly: boolean): Promise<ModBuild | null> {
+		const file = await (serverOnly ? this.curseforge.getServerFile : this.curseforge.getFile)(Number(mod), Number(fileId));
 		if (file === undefined) return null;
 
 		return {
