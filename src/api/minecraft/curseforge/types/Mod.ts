@@ -36,7 +36,7 @@ export class Mod extends CurseObject {
 
 	public readonly authors: ModAuthor[];
 
-	public readonly logo: ModAsset;
+	public readonly logo?: ModAsset;
 
 	public readonly thumbnails: ModAsset[];
 

@@ -56,6 +56,19 @@ class Curseforge {
 		return mods;
 	}
 
+	async getMod(modId: number): Promise<Mod | null> {
+		const uri = new URL(`v1/mods/${modId}`, this.baseURL);
+
+		// TODO: Change to cachedFetch
+		const res = await this.fetch(uri.toString(), { headers: this.headers });
+		if (res === null) { return null; }
+
+		const json: any = await res.json();
+		if (json === null) return null;
+
+		return new Mod(this, json.data);
+	}
+
 	// This uses the getFiles function.
 	// getFiles will return the latest files and it tells us if there are server packs available.
 	// If there are server packs available, this creates a list and fetches them from the API.

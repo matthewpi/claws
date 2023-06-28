@@ -220,9 +220,25 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
+		this.router.get('/api/v1/projects/:project/mods/:mod', async ({ params }: {params: { project: string, mod: string }, url: string}) => {
+			const { project, mod } = params;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider as ModProviderHandler;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getMod(mod);
+			if (res === null) return this.json(null);
+
+			return this.json(res);
+		});
+
 		// Passing ?serverOnly=true will drastically increase the response time as it has to perform a lot of extra http requests.
-		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params, url }: {params: { project: string, mod: string, serverOnly?: boolean}, url: string}) => {
-			const { project, mod, serverOnly } = params;
+		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params, query, url }: {params: { project: string, mod: string, serverOnly?: boolean}, query: {serverOnly?: boolean}, url: string}) => {
+			const { project, mod } = params;
+			const { serverOnly } = query;
 
 			if (!(project in mods)) return missing('project not found');
 
@@ -237,8 +253,9 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			return this.json(res);
 		});
 
-		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params, url }: {params: { project: string, mod: string, file: string, serverOnly?: boolean }, url: string}) => {
-			const { project, mod, file, serverOnly } = params;
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params, query, url }: {params: { project: string, mod: string, file: string }, query: {serverOnly?: boolean}, url: string}) => {
+			const { project, mod, file } = params;
+			const { serverOnly } = query;
 
 			if (!(project in mods)) return missing('project not found');
 

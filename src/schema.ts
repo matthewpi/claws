@@ -20,7 +20,7 @@ export interface Download {
 		sha256?: string;
 		sha512?: string;
 	};
-	metadata: Record<string, string>;
+	metadata: Record<string, any>;
 }
 
 export interface ModDownload extends Download {
@@ -87,6 +87,7 @@ export interface ModProviderHandler extends ProviderHandler {
 	searchMods: (query?: string) => Promise<Mod[]>;
 
 	getProject: () => Promise<ModProvider | null>;
+	getMod: (mod: string) => Promise<Mod | null>;
 	getFiles: (mod: string, serverOnly: boolean) => Promise<ModBuild[] | null>;
 	getFile: (mod: string, fileId: string, serverOnly: boolean) => Promise<ModBuild | null>;
 	getDownload: (mod: string, fileId: string) => Promise<Response | null>;

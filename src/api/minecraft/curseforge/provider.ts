@@ -21,12 +21,27 @@ export class Provider implements ModProviderHandler {
 			name: mod.name,
 			latestGameVersion: mod?.latestFiles[0]?.gameVersions[0] ?? 'latest',
 			latestVersion: mod?.latestFiles[0]?.displayName ?? 'latest',
-			icon: mod.logo.url,
+			icon: mod.logo?.url,
 		}));
 	}
 
+	async getMod(modId: string): Promise<Mod | null> {
+		const mod = await this.curseforge.getMod(Number(modId));
+		if (mod === null) return null;
+
+		console.log(mod);
+
+		return {
+			id: mod.id.toString(),
+			name: mod.name,
+			latestGameVersion: mod?.latestFiles[0]?.gameVersions[0] ?? 'latest',
+			latestVersion: mod?.latestFiles[0]?.displayName ?? 'latest',
+			icon: mod.logo?.url,
+		};
+	}
+
 	async getFiles(mod: string, serverOnly: boolean): Promise<ModBuild[] | null> {
-		let files = await (serverOnly ? this.curseforge.getServerFiles : this.curseforge.getFiles)(Number(mod), {});
+		let files = await (serverOnly ? this.curseforge.getServerFiles(Number(mod), {}) : this.curseforge.getFiles(Number(mod), {}));
 		files = files.filter(f => f.isServerPack || !!f.serverPackFileId);
 
 		return files.map((file) => ({
@@ -41,20 +56,25 @@ export class Provider implements ModProviderHandler {
 				},
 				serverPack: file.isServerPack ?? false,
 				serverPackFileId: file.serverPackFileId ?? undefined,
-				metadata: {},
+				metadata: {
+					size: file.fileLength,
+				},
 			},
 		}));
 	}
 
 	async getFile(mod: string, fileId: string, serverOnly: boolean): Promise<ModBuild | null> {
-		const file = await (serverOnly ? this.curseforge.getServerFile : this.curseforge.getFile)(Number(mod), Number(fileId));
+		let file;
+		if (fileId === 'latest') file = await (serverOnly ? this.curseforge.getServerFiles(Number(mod), {}) : this.curseforge.getFiles(Number(mod), {})).then(f => f[0]);
+		else file = await (serverOnly ? this.curseforge.getServerFile(Number(mod), fileId) : this.curseforge.getFile(Number(mod), Number(fileId)));
+
 		if (file === undefined) return null;
 
 		return {
 			id: file.id.toString(),
 			download: {
 				name: file.fileName,
-				url: `/api/v1/projects/${this.project.slug}/mods/${mod}/files/${fileId}/download`,
+				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
 				builtAt: file.fileDate,
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
@@ -62,7 +82,9 @@ export class Provider implements ModProviderHandler {
 				},
 				serverPack: file.isServerPack ?? false,
 				serverPackFileId: file.serverPackFileId ?? undefined,
-				metadata: {},
+				metadata: {
+					size: file.fileLength,
+				},
 			},
 		};
 	}
