@@ -1,5 +1,4 @@
-import { PaperMC, Provider } from 'src/api/minecraft/papermc';
-
+import { PaperMC, Provider } from '~/api/minecraft/papermc';
 import { EditionProvider, ProviderType } from '~/schema';
 
 const waterfall: EditionProvider = {

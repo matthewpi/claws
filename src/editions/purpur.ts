@@ -1,5 +1,4 @@
-import { Provider, Purpur } from 'src/api/minecraft/purpur';
-
+import { Provider, Purpur } from '~/api/minecraft/purpur';
 import { EditionProvider, ProviderType } from '~/schema';
 
 const purpur: EditionProvider = {

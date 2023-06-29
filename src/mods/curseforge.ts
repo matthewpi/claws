@@ -1,5 +1,4 @@
-import { Curseforge, Provider } from 'src/api/minecraft/curseforge';
-
+import { Curseforge, Provider } from '~/api/minecraft/curseforge';
 import { EditionProvider, ProviderType } from '~/schema';
 
 const curseforge: EditionProvider = {

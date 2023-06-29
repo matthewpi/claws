@@ -7,9 +7,9 @@ import {
 	withContent,
 	withParams,
 } from 'itty-router-extras';
-import editions from 'src/editions';
 
 import categories from '~/categories';
+import editions from '~/editions';
 import mods from '~/mods';
 import projects from '~/projects';
 import { EditionProvider, EditionProviderHandler, ModProviderHandler, Provider, ProviderType } from '~/schema';
