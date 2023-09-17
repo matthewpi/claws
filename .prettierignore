@@ -1,4 +1,4 @@
-/.github
-/.husky
-/.vscode
-/.yarn
+.output
+dist
+functions
+node_modules

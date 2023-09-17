@@ -1,5 +1,5 @@
 {
-	"printWidth": 100,
+	"printWidth": 120,
 	"tabWidth": 4,
 	"useTabs": true,
 	"semi": true,
@@ -7,7 +7,16 @@
 	"jsxSingleQuote": false,
 	"trailingComma": "all",
 	"bracketSpacing": true,
-	"jsxBracketSameLine": false,
-	"arrowParens": "always",
-	"endOfLine": "lf"
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": ["**/*.md"],
+			"options": {
+				"tabWidth": 2,
+				"useTabs": false,
+				"singleQuote": false
+			}
+		}
+	]
 }

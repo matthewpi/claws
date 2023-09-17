@@ -13,6 +13,7 @@ export interface Download {
 	name: string;
 	url: string;
 	builtAt: Date;
+	size?: number;
 	checksums: {
 		md5?: string;
 		sha1?: string;

@@ -135,7 +135,7 @@ class Purpur {
 		const options = init || {};
 		options.headers = {
 			...options.headers,
-			'User-Agent': USER_AGENT,
+			'User-Agent': 'Claws',
 		};
 		const res = await fetch(this.baseURL + input, options);
 		switch (res.status) {

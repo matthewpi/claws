@@ -213,18 +213,22 @@ router.get(
 
 router.all('*', () => missing('Not Found'));
 
+export function handleRequest(request: Request): Promise<Response> {
+	return router.handle(request as unknown as Request).catch(async (error: any) => {
+		if (error instanceof StatusError) {
+			const e = error as StatusError;
+
+			// @ts-expect-error
+			return formatError(e.status, e.message);
+		}
+
+		console.error(error);
+		return formatError(500, 'internal server error');
+	});
+}
+
 export default {
-	async fetch(request: FetchEvent): Promise<Response> {
-		return router.handle(request as unknown as Request).catch(async (error: any) => {
-			if (error instanceof StatusError) {
-				const e = error as StatusError;
-
-				// @ts-expect-error
-				return formatError(e.status, e.message);
-			}
-
-			console.error(error);
-			return formatError(500, 'internal server error');
-		});
+	async fetch(request: Request): Promise<Response> {
+		return handleRequest(request);
 	},
 };

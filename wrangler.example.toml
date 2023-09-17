@@ -1,10 +1,10 @@
 name = "claws"
-compatibility_date = "2022-05-18"
-main = "dist/index.mjs"
+usage_model = "bundled"
+
+compatibility_date = "2023-09-16"
+compatibility_flags = []
 
 workers_dev = false
 account_id = "<ACCOUNT_ID>"
-route = { pattern = "claws.<DOMAIN>/*", zone_name = "<DOMAIN>" }
 
-[build]
-command = "yarn install --immutable && yarn run build"
+route = { pattern = "claws.<DOMAIN>/*", zone_name = "<DOMAIN>" }

@@ -1,32 +1,37 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
-
-		"module": "ESNext",
-		"moduleResolution": "Node",
-		"target": "ESNext",
-		"lib": ["ESNext", "WebWorker"],
-		"types": ["@cloudflare/workers-types", "@types/itty-router-extras"],
-
-		"allowJs": true,
+		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
+		"composite": false,
+		"declaration": true,
+		"declarationMap": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
+		"inlineSources": false,
 		"isolatedModules": true,
-		"noEmit": false,
+		"moduleResolution": "Node",
+		"newLine": "lf",
+		"noEmit": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
 		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
 		"noUnusedParameters": true,
+		"preserveWatchOutput": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"sourceMap": false,
+		"sourceMap": true,
 		"strict": true,
+		"stripInternal": true,
+		"useDefineForClassFields": true,
 
-		"paths": {
-			"~/*": ["./src/*"]
-		}
+		"lib": ["ESNext"],
+		"module": "ESNext",
+		"target": "ESNext",
+		"types": ["@cloudflare/workers-types", "vitest-environment-miniflare/globals"]
 	},
-
-	"include": ["**/*.ts", "**/*.d.ts"],
-
+	"include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts"],
 	"exclude": ["dist", "node_modules"]
 }
